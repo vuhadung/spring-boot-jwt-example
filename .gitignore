@@ -1,0 +1,94 @@
+# Gradle
+# # ------
+.gradle
+/build
+/buildSrc/build
+/subprojects/*/build
+/subprojects/docs/src/samples/*/*/build
+/subprojects/internal-android-performance-testing/build-android-libs
+!Dockerfile
+
+#
+# Project specific excludes
+#
+
+tomcat
+
+#
+# Default excludes
+#
+
+# Binaries
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.war
+*.ear
+*.sar
+*.class
+*.ignore
+*.log
+
+# Maven 
+target/
+
+# IntelliJ project files 
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# NetBeans specific
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+*package-lock.json
+
+# OS
+.DS_Store
+
+# Misc
+*.swp
+release.properties
+pom.xml.releaseBackup
+pom.xml.tag
+/core/nbproject/
+/dal-core/nbproject/private/
+/example/confserv/nbproject/
+/bin/
+
+# docs
+**/*.tmp
+**/*.~vsdx
+**/~*.docx
+
+*.local.conf
+*.db
+
+version.txt
+/engine/nbproject/
+/engine/.keystore
+/engine/documents/api-specification/
+/engine/.vertx/
+/operator-ui/.vertx/
+/operator-ui/ui-backend/.vertx/
+/operator-ui/ui-backend/nbproject/
+engine/src/main/resources/application.ddao.conf
+
+*package-lock.json
+*.local.conf

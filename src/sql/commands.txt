@@ -1,0 +1,6 @@
+sudo -u postgres psql
+[Inside psql]
+    \du (list all users)
+	\l (list all database)
+	create user root with encrypted password 'root';
+	create database hackathon;
