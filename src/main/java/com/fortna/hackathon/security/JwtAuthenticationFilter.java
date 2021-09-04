@@ -1,4 +1,4 @@
-package com.fortna.hackathon.config;
+package com.fortna.hackathon.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -54,8 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 logger.info("authenticated user " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                logger.info("Access token expired or invalid!");
             }
-            logger.info("Access token expired!");
         }
         chain.doFilter(req, res);
     }

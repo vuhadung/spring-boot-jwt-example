@@ -15,11 +15,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
-import com.fortna.hackathon.config.TokenProvider;
 import com.fortna.hackathon.dto.LoginRequest;
 import com.fortna.hackathon.dto.LoginResponse;
 import com.fortna.hackathon.dto.UserDto;
 import com.fortna.hackathon.entity.User;
+import com.fortna.hackathon.security.TokenProvider;
 import com.fortna.hackathon.service.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)

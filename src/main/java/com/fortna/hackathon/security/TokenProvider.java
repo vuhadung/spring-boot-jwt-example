@@ -1,4 +1,4 @@
-package com.fortna.hackathon.config;
+package com.fortna.hackathon.security;
 
 import io.jsonwebtoken.*;
 
