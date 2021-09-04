@@ -1,6 +1,8 @@
 package com.fortna.hackathon.config;
 
 import io.jsonwebtoken.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -8,6 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.fortna.hackathon.service.UserService;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -27,6 +31,9 @@ public class TokenProvider implements Serializable {
 
     @Value("${jwt.authorities.key}")
     public String AUTHORITIES_KEY;
+
+    @Autowired
+    private UserService userService;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -62,7 +69,8 @@ public class TokenProvider implements Serializable {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        String dbToken = userService.findOne(username).getAccessToken();
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && token.equals(dbToken));
     }
 
     UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final UserDetails userDetails) {
@@ -72,7 +80,7 @@ public class TokenProvider implements Serializable {
         final Collection<? extends GrantedAuthority> authorities = Arrays
                 .stream(claims.get(AUTHORITIES_KEY).toString().split(",")).map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
 
 }

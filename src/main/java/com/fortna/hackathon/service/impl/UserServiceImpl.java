@@ -85,4 +85,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         nUser.setRoles(roleSet);
         return userDao.save(nUser);
     }
+
+    @Override
+    @Transactional
+    public void updateAccessToken(String token, String username) {
+        userDao.updateAccessTokenByUsername(token, username);
+        
+    }
 }

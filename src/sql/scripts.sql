@@ -24,6 +24,7 @@ drop sequence if exists user_seq;
         email varchar(255),
         password varchar(255),
         username varchar(255),
+		access_token varchar(255),
         primary key (id)
     );
 
@@ -47,3 +48,9 @@ ALTER TABLE user_role ALTER COLUMN id SET DEFAULT nextval('user_role_seq');
 	   
 INSERT INTO roles (description, name) VALUES ('Admin role', 'ADMIN');
 INSERT INTO roles (description, name) VALUES ('User role', 'USER');
+
+INSERT INTO users (email, password, username, access_token) VALUES ('', '{JgZMrA8MGJ3E05evWWI5nbjFfk0Ms4C1P4rPFR4k8sM=}64354914afcc6eb99aa180519cb364e5', 'admin', '');
+
+INSERT INTO user_role (role_id, user_id) VALUES((SELECT id from roles where name = 'ADMIN'), (SELECT id from users where username = 'admin'));
+
+
