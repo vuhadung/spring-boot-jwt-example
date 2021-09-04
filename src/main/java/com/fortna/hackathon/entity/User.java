@@ -24,7 +24,7 @@ public class User {
     private String email;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRole> roles;
 
     public long getId() {

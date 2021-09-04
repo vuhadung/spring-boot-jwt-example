@@ -33,7 +33,6 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> generateToken(@RequestBody LoginRequest loginUser) throws AuthenticationException {
-
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -47,8 +46,7 @@ public class UserController {
         if (entity == null) {
             userService.save(user);
             return ResponseEntity.status(HttpStatus.OK).body("Register successfully!");
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already existed!");
     }
 

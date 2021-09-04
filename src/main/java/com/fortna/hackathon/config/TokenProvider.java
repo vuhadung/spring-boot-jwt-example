@@ -65,8 +65,7 @@ public class TokenProvider implements Serializable {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth,
-            final UserDetails userDetails) {
+    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final UserDetails userDetails) {
         final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
         final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
         final Claims claims = claimsJws.getBody();

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,21 +33,29 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Autowired
     private UserDao userDao;
 
+    /**
+     * {@inheritDoc} <br/>
+     * Lazy loading requires a transaction to keep Hibernate session proxy opened
+     * <br/>
+     * More information, see <a href =
+     * "https://stackoverflow.com/questions/48891079/hibernate-failed-to-lazily-initialize-a-collection-of-role-could-not-initiali">
+     * this link </a>
+     * 
+     */
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("Invalid username or password.");
+            throw new UsernameNotFoundException("User not found!");
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-                getAuthority(user));
-    }
 
-    private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole().getName()));
         });
-        return authorities;
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                authorities);
     }
 
     public List<User> findAll() {

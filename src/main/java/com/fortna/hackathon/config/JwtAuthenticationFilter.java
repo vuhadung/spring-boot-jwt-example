@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Value("${jwt.header.string}")
     public String HEADER_STRING;
 
-    @Resource(name = "userService")
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -47,12 +47,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } else {
             logger.warn("No access token provided, header will be ignored");
         }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (username != null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtTokenUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.getAuthenticationToken(token,
-                        SecurityContextHolder.getContext().getAuthentication(), userDetails);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+                        userDetails);
+                //authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 logger.info("authenticated user " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
