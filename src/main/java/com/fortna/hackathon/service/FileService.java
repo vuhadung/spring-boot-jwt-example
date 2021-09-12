@@ -4,6 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
 
-    public void storeFile(MultipartFile file);
+    public void storeFile(String dir, MultipartFile file);
 
 }

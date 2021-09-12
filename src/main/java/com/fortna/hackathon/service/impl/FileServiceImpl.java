@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermissions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,32 +19,22 @@ import com.fortna.hackathon.service.FileService;
 @Service(value = "fileService")
 public class FileServiceImpl implements FileService {
 
-    private final Path fileStorageLocation;
-
     @Autowired
-    public FileServiceImpl(FileStorageConfiguration fileStorageConfig) {
-        this.fileStorageLocation = Paths.get(fileStorageConfig.getUploadDir()).toAbsolutePath().normalize();
+    private FileStorageConfiguration fileStorageConfig;
 
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored!",
-                    ex);
-        }
-    }
-
-    public void storeFile(MultipartFile file) {
-        // Normalize file name
+    public void storeFile(String dir, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
-            // Check if the file's name contains invalid characters
             if (fileName.contains("..")) {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
-            // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path targetDir = Paths.get(this.fileStorageConfig.getUploadDir(), dir).toAbsolutePath().normalize();
+            Files.createDirectories(targetDir,
+                    PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx")));
+
+            Path targetLocation = targetDir.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return;

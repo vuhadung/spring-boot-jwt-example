@@ -19,10 +19,10 @@ public class FileController {
     private FileService fileService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("description") String desc,
+    public ResponseEntity<?> uploadFile(@RequestParam("directory") String dir,
             @RequestParam("file") MultipartFile file) {
-        fileService.storeFile(file);
-        return ResponseEntity.status(HttpStatus.OK).body("Upload (" + desc + ") successfully!");
+        fileService.storeFile(dir, file);
+        return ResponseEntity.status(HttpStatus.OK).body("Upload to " + dir + " successfully!");
     }
 
 }
