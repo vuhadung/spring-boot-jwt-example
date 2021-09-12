@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,13 @@ public class FileServiceImpl implements FileService {
             }
 
             Path targetDir = Paths.get(this.fileStorageConfig.getUploadDir(), dir).toAbsolutePath().normalize();
-            Files.createDirectories(targetDir,
-                    PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx")));
+            Files.createDirectories(targetDir);
+            // PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx"))
 
-            Path targetLocation = targetDir.resolve(fileName);
+            String[] extensions = fileName.split(Pattern.quote("."));
+            String newFileName = "file" + "." + extensions[extensions.length - 1];
+
+            Path targetLocation = targetDir.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return;
