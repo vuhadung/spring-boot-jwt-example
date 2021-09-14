@@ -22,6 +22,7 @@ public class FileController {
     public ResponseEntity<?> uploadFile(@RequestParam("directory") String dir,
             @RequestParam("file") MultipartFile file) {
         fileService.storeFile(dir, file);
+        fileService.generateEntryPoint(dir);
         return ResponseEntity.status(HttpStatus.OK).body("Upload to " + dir + " successfully!");
     }
 
