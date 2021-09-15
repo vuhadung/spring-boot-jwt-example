@@ -1,56 +1,134 @@
-drop table if exists user_role;
-drop table if exists roles;
-drop table if exists users;
-drop sequence if exists role_seq;
-drop sequence if exists user_role_seq;
-drop sequence if exists user_seq;
+drop table if exists MATCHES cascade;
+drop table if exists SUBMISSIONS cascade;
+drop table if exists COURSES cascade;
+drop table if exists LANGUAGES cascade;
+drop table if exists USER_ROLE cascade;
+drop table if exists ROLES cascade;
+drop table if exists USERS cascade;
 
-    create table roles (
-        id int8 not null,
-        description varchar(255),
-        name varchar(255),
-        primary key (id)
+drop sequence if exists COURSE_SEQ;
+drop sequence if exists LANG_SEQ;
+drop sequence if exists MATCH_SEQ;
+drop sequence if exists ROLE_SEQ;
+drop sequence if exists SUBMISSION_SEQ;
+drop sequence if exists USER_ROLE_SEQ;
+drop sequence if exists USER_SEQ;
+
+create sequence COURSE_SEQ start 1 increment 1;
+create sequence LANG_SEQ start 1 increment 1;
+create sequence MATCH_SEQ start 1 increment 1;
+create sequence ROLE_SEQ start 1 increment 1;
+create sequence SUBMISSION_SEQ start 1 increment 1;
+create sequence USER_ROLE_SEQ start 1 increment 1;
+create sequence USER_SEQ start 1 increment 1;
+
+    create table COURSES (
+       ID int8 not null,
+        CREATED_DATE timestamp,
+        COURSE_NAME varchar(255),
+        PATH_TO_FILE varchar(255),
+        UPDATED_DATE timestamp,
+        primary key (ID)
     );
 
-    create table user_role (
-       id int8 not null,
-        role_id int8,
-        user_id int8,
-        primary key (id)
+    create table LANGUAGES (
+       ID int8 not null,
+        NAME varchar(255),
+        primary key (ID)
     );
 
-    create table users (
-       id int8 not null,
-        email varchar(255),
-        password varchar(255),
-        username varchar(255),
-		access_token varchar(255),
-        primary key (id)
+    create table MATCHES (
+       ID int8 not null,
+        CREATED_DATE timestamp,
+        PATH_TO_FILE varchar(255),
+        UPDATED_DATE timestamp,
+        COURSE_ID int8,
+        PLAYER_0_ID int8,
+        PLAYER_1_ID int8,
+        WINNER_ID int8,
+        primary key (ID)
     );
 
-    alter table user_role 
-       add constraint FK_role 
-       foreign key (role_id) 
-       references roles;
+    create table ROLES (
+       ID int8 not null,
+        DESCRIPTION varchar(255),
+        NAME varchar(255),
+        primary key (ID)
+    );
 
-    alter table user_role 
-       add constraint FK_user 
-       foreign key (user_id) 
-       references users;
+    create table SUBMISSIONS (
+       ID int8 not null,
+        CREATED_DATE timestamp,
+        PATH_TO_FILE varchar(255),
+        UPDATED_DATE timestamp,
+        LANGUAGE_ID int8,
+        USER_ID int8,
+        primary key (ID)
+    );
 
-create sequence role_seq start 1 increment 1;
-create sequence user_role_seq start 1 increment 1;
-create sequence user_seq start 1 increment 1;
+    create table USER_ROLE (
+       ID int8 not null,
+        ROLE_ID int8,
+        USER_ID int8,
+        primary key (ID)
+    );
 
-ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('user_seq');
-ALTER TABLE roles ALTER COLUMN id SET DEFAULT nextval('role_seq');
-ALTER TABLE user_role ALTER COLUMN id SET DEFAULT nextval('user_role_seq');
+    create table USERS (
+       ID int8 not null,
+        ACCESS_TOKEN varchar(255),
+        CREATED_DATE timestamp,
+        EMAIL varchar(255),
+        PASSWORD varchar(255),
+        UPDATED_DATE timestamp,
+        USER_NAME varchar(255),
+        primary key (ID)
+    );
+
+    alter table MATCHES 
+       add constraint FKfokqqfl172aqbhwqk0lwa7vj5 
+       foreign key (COURSE_ID) 
+       references COURSES;
+
+    alter table MATCHES 
+       add constraint FKnkgt8ncwu6d8ljjby92xak3eu 
+       foreign key (PLAYER_0_ID) 
+       references USERS;
+
+    alter table MATCHES 
+       add constraint FKab75k0dbotra80jq0icrnh89v 
+       foreign key (PLAYER_1_ID) 
+       references USERS;
+
+    alter table MATCHES 
+       add constraint FKrmhd5g0f8fsdkgpr2jxlo41lj 
+       foreign key (WINNER_ID) 
+       references USERS;
+
+    alter table SUBMISSIONS 
+       add constraint FKrao7vakvldnp9rvn93q2nlhdg 
+       foreign key (LANGUAGE_ID) 
+       references LANGUAGES;
+
+    alter table SUBMISSIONS 
+       add constraint FKosfcthai5iqw0s2vqp2q7qcyt 
+       foreign key (USER_ID) 
+       references USERS;
+
+    alter table USER_ROLE 
+       add constraint FKcv7h6lq93jnxs6trp7xq1x5sn 
+       foreign key (ROLE_ID) 
+       references ROLES;
+
+    alter table USER_ROLE 
+       add constraint FKr4wtg8onirvrqs1ailjjjsx0y 
+       foreign key (USER_ID) 
+       references USERS;
+
 	   
-INSERT INTO roles (description, name) VALUES ('Admin role', 'ADMIN');
-INSERT INTO roles (description, name) VALUES ('User role', 'USER');
-
-INSERT INTO users (email, password, username, access_token) VALUES ('', '{JgZMrA8MGJ3E05evWWI5nbjFfk0Ms4C1P4rPFR4k8sM=}64354914afcc6eb99aa180519cb364e5', 'admin', '');
-
-INSERT INTO user_role (role_id, user_id) VALUES((SELECT id from roles where name = 'ADMIN'), (SELECT id from users where username = 'admin'));
-
+INSERT INTO ROLES (ID, DESCRIPTION, NAME) VALUES (NEXTVAL('ROLE_SEQ'), 'Admin role', 'ADMIN');
+INSERT INTO ROLES (ID, DESCRIPTION, NAME) VALUES (NEXTVAL('ROLE_SEQ'), 'User role', 'USER');
+INSERT INTO USERS (ID, EMAIL, PASSWORD, USER_NAME, ACCESS_TOKEN, CREATED_DATE, UPDATED_DATE) VALUES (NEXTVAL('USER_SEQ'), 'admin@fortna.com', '{JgZMrA8MGJ3E05evWWI5nbjFfk0Ms4C1P4rPFR4k8sM=}64354914afcc6eb99aa180519cb364e5', 'admin', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO USER_ROLE (ID, ROLE_ID, USER_ID) VALUES(NEXTVAL('USER_ROLE_SEQ'), (SELECT ID FROM ROLES WHERE NAME = 'ADMIN'), (SELECT ID FROM USERS WHERE USER_NAME = 'admin'));
+INSERT INTO LANGUAGES (ID, NAME) VALUES (NEXTVAL('LANG_SEQ'), 'C++ 11');
+INSERT INTO LANGUAGES (ID, NAME) VALUES (NEXTVAL('LANG_SEQ'), 'JAVA 8');
 

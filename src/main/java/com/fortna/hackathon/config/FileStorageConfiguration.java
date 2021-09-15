@@ -23,8 +23,8 @@ public class FileStorageConfiguration {
         return new StringBuilder().append(this.gameDir).append(File.separator).append("official").toString();
     }
     
-    public String getMapDir() {
-        return new StringBuilder().append(this.gameDir).append(File.separator).append("map").toString();
+    public String getCourseDir() {
+        return new StringBuilder().append(this.gameDir).append(File.separator).append("course").toString();
     }
     
     public String getPlayerDir() {

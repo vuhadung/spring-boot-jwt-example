@@ -1,5 +1,6 @@
 package com.fortna.hackathon.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,20 +12,21 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_role")
+@Table(name = "USER_ROLE")
 public class UserRole {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_role_generator")
-    @SequenceGenerator(name = "user_role_generator", sequenceName = "user_role_seq", allocationSize = 1)
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_ROLE_GENERATOR")
+    @SequenceGenerator(name = "USER_ROLE_GENERATOR", sequenceName = "USER_ROLE_SEQ", allocationSize = 1)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "USER_ID")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "ROLE_ID")
     private Role role;
 
     public User getUser() {
@@ -42,7 +44,5 @@ public class UserRole {
     public void setRole(Role role) {
         this.role = role;
     }
-
-    
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.fortna.hackathon.dto.AppResponse;
 import com.fortna.hackathon.exception.FileStorageException;
 
 @ControllerAdvice
@@ -16,22 +17,23 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     protected ResponseEntity<?> handlAnthenticationException(RuntimeException ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized!");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AppResponse("Unauthorized!", null));
     }
 
     @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
     protected ResponseEntity<?> handleAccessDeniedException(RuntimeException ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Forbidden!");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AppResponse("Forbidden!", null));
     }
 
     @ExceptionHandler(FileStorageException.class)
     protected ResponseEntity<?> handleUploadFileException(RuntimeException ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AppResponse(ex.getMessage(), null));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     protected ResponseEntity<?> handleMaxSizeException(RuntimeException ex, WebRequest req) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File is too large!");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new AppResponse("File is too large!", null));
     }
 
 }
