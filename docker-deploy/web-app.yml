@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  hackathon-web-app:
+    image: localhost:5000/dungvu/web-app:latest
+    ports:
+      - 8088:8088
+    volumes:
+    - ./data:/data
+    - ./logs:/logs
+    environment:
+      - CONNECTION_URL=jdbc:postgresql://172.17.0.1:5432/hackathon
+      - CONNECTION_USERNAME=root
+      - CONNECTION_PASSWORD=root
