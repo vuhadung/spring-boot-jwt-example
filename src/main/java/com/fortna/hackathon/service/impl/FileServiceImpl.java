@@ -11,6 +11,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,13 @@ import com.fortna.hackathon.service.FileService;
 
 @Service(value = "fileService")
 public class FileServiceImpl implements FileService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     @Autowired
     private FileStorageConfiguration fileStorageConfig;
 
-    public void storeFile(String dir, MultipartFile file) {
+    public void storePlayerFile(String dir, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
@@ -35,7 +39,7 @@ public class FileServiceImpl implements FileService {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
-            Path targetDir = Paths.get(this.fileStorageConfig.getUploadDir(), dir).toAbsolutePath().normalize();
+            Path targetDir = Paths.get(this.fileStorageConfig.getPlayerDir(), dir).toAbsolutePath().normalize();
             Files.createDirectories(targetDir);
             // PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx"))
 
@@ -53,7 +57,7 @@ public class FileServiceImpl implements FileService {
 
     @Async("asyncExecutor")
     public CompletableFuture<Void> generateEntryPoint(String dir) {
-        Path targetDir = Paths.get(this.fileStorageConfig.getUploadDir(), dir).toAbsolutePath().normalize();
+        Path targetDir = Paths.get(this.fileStorageConfig.getPlayerDir(), dir).toAbsolutePath().normalize();
         String shFile = new StringBuilder().append(targetDir.toString()).append(File.separator).append("runme.sh")
                 .toString();
         String jarFile = new StringBuilder().append(targetDir.toString()).append(File.separator).append("runme.jar")
@@ -64,8 +68,7 @@ public class FileServiceImpl implements FileService {
         try (BufferedWriter br = new BufferedWriter(new FileWriter(new File(shFile)))) {
             br.write(content);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         ProcessBuilder processBuilder = null;
@@ -73,10 +76,10 @@ public class FileServiceImpl implements FileService {
         try {
             processBuilder = new ProcessBuilder("chmod", "+x", shFile);
             process = processBuilder.start();
+            process.waitFor();
 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (IOException | InterruptedException e) {
+            logger.error(e.getMessage());
         } finally {
             process.destroy();
         }

@@ -21,7 +21,7 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("directory") String dir,
             @RequestParam("file") MultipartFile file) {
-        fileService.storeFile(dir, file);
+        fileService.storePlayerFile(dir, file);
         fileService.generateEntryPoint(dir);
         return ResponseEntity.status(HttpStatus.OK).body("Upload to " + dir + " successfully!");
     }
