@@ -25,6 +25,7 @@ import com.fortna.hackathon.service.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     @Autowired
@@ -36,6 +37,7 @@ public class UserController {
     @Autowired
     private TokenProvider jwtTokenUtil;
 
+    @PreAuthorize("permitAll()")
     @PostMapping(value = "/auth/login", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> generateToken(@RequestBody LoginRequest loginUser) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(
@@ -46,6 +48,7 @@ public class UserController {
         return ResponseEntity.ok(new AppResponse(null, token));
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping(value = "/auth/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveUser(@RequestBody UserDto user) {
         User entity = userService.findOne(user.getUsername());

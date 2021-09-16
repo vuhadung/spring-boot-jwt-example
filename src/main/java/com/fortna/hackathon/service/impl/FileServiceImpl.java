@@ -25,7 +25,7 @@ import com.fortna.hackathon.service.FileService;
 
 @Service(value = "fileService")
 public class FileServiceImpl implements FileService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     @Autowired
@@ -44,6 +44,9 @@ public class FileServiceImpl implements FileService {
             // PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx"))
 
             String[] extensions = fileName.split(Pattern.quote("."));
+            if (extensions.length > 2 && !"jar".equals(extensions[extensions.length - 1])) {
+                throw new FileStorageException("Sorry! This extension is not allowed to upload!" + fileName);
+            }
             String newFileName = "file" + "." + extensions[extensions.length - 1];
 
             Path targetLocation = targetDir.resolve(newFileName);
