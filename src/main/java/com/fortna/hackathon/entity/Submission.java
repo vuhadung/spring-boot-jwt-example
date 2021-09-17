@@ -23,7 +23,7 @@ public class Submission {
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SUBMISSION_GENERATOR")
     @SequenceGenerator(name = "SUBMISSION_GENERATOR", sequenceName = "SUBMISSION_SEQ", allocationSize = 1)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")

@@ -19,10 +19,17 @@ public class Course {
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COURSE_GENERATOR")
     @SequenceGenerator(name = "COURSE_GENERATOR", sequenceName = "COURSE_SEQ", allocationSize = 1)
-    private long id;
+    private Long id;
     
     @Column(name = "COURSE_NAME")
     private String name;
+    
+    @Column(name = "SUBMISSION_DEADLINE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deadline;
+    
+    @Column(name = "IS_BACKUP")
+    private Boolean isBackup;
     
     @Column(name = "CREATED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
@@ -65,6 +72,22 @@ public class Course {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public Date getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
+
+    public Boolean isBackup() {
+        return isBackup;
+    }
+
+    public void setBackup(boolean isBackup) {
+        this.isBackup = isBackup;
     }
 
     public String getPathToFile() {

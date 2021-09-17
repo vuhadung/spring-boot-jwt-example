@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fortna.hackathon.dto.AppResponse;
 import com.fortna.hackathon.exception.FileStorageException;
+import com.fortna.hackathon.exception.RunGameException;
 
 @ControllerAdvice
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
@@ -27,6 +28,11 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(FileStorageException.class)
     protected ResponseEntity<?> handleUploadFileException(RuntimeException ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AppResponse(ex.getMessage(), null));
+    }
+    
+    @ExceptionHandler(RunGameException.class)
+    protected ResponseEntity<?> handleExecuteGameException(RuntimeException ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AppResponse(ex.getMessage(), null));
     }
 

@@ -1,12 +1,12 @@
 package com.fortna.hackathon.service;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
 
-    public void storePlayerFile(String dir, MultipartFile file);
+    void storePlayerFile(String dir, String langId, MultipartFile file);
 
-    public CompletableFuture<Void> generateEntryPoint(String dir);
+    void generateEntryPoint(String dir, String langId);
+    
+    void storeCourseFile(String courseName, MultipartFile file);
 }

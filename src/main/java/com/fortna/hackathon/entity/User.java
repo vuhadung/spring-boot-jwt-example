@@ -15,7 +15,7 @@ public class User {
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_GENERATOR")
     @SequenceGenerator(name = "USER_GENERATOR", sequenceName = "USER_SEQ", allocationSize = 1)
-    private long id;
+    private Long id;
 
     @Column(name = "USER_NAME")
     private String username;
@@ -24,6 +24,9 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @Column(name = "DISPLAY_NAME")
+    private String displayName;
+    
     @Column(name = "EMAIL")
     private String email;
 
@@ -48,9 +51,11 @@ public class User {
     private List<Submission> submissions;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "winner", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "finalWinner", cascade = CascadeType.ALL)
     private List<Match> winMatches;
 
+    // Getters and Setters
+    
     public long getId() {
         return id;
     }
@@ -81,6 +86,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public Set<UserRole> getRoles() {

@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +24,34 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    @PreAuthorize("permitAll()")
-    @PostMapping(value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadFile(@RequestParam("directory") String dir,
+    /**
+     * 
+     * @param courseId
+     * @param langId
+     * @param file
+     * @return
+     */
+    @PostMapping(value = "/player/upload", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadPlayerFile(@RequestParam("language") String langId,
             @RequestParam("file") MultipartFile file) {
-        fileService.storePlayerFile(dir, file);
-        fileService.generateEntryPoint(dir);
+        // TODO validate submission time
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        fileService.storePlayerFile(authentication.getName(), langId, file);
+        fileService.generateEntryPoint(authentication.getName(), langId);
+        return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Upload successfully!"));
+    }
+
+    /**
+     * 
+     * @param courseName
+     * @param file
+     * @return
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/course/upload", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadCourseFile(@RequestParam("name") String courseName,
+            @RequestParam("file") MultipartFile file) {
+        fileService.storeCourseFile(courseName, file);
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Upload successfully!"));
     }
 
