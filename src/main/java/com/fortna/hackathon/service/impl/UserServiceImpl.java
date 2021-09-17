@@ -23,6 +23,7 @@ import com.fortna.hackathon.entity.User;
 import com.fortna.hackathon.entity.UserRole;
 import com.fortna.hackathon.service.RoleService;
 import com.fortna.hackathon.service.UserService;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -90,6 +91,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public void updateAccessToken(String token, String username) {
         userDao.updateAccessTokenByUsername(token, username);
-        
+
+    }
+
+    @Override
+    @Transactional
+    public String getUserAvatar(String username) {
+        User user = userDao.findByUsername(username);
+        if (user.getAvatar() != null) {
+            return Base64.encode(user.getAvatar());
+        }
+        return new String();
     }
 }

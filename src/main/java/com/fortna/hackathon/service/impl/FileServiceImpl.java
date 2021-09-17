@@ -20,6 +20,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fortna.hackathon.config.FileStorageConfiguration;
@@ -168,7 +169,7 @@ public class FileServiceImpl implements FileService {
             String newFileName = null;
             String[] extensions = fileName.split(Pattern.quote("."));
             if (extensions.length > 2 && !"smrjky".equals(extensions[extensions.length - 1])) {
-                throw new FileStorageException("Sorry! This extension is not allowed to upload!" + fileName);
+                throw new FileStorageException("Sorry! This extension is not allowed to upload!");
             }
 
             Course course = new Course();
@@ -188,6 +189,26 @@ public class FileServiceImpl implements FileService {
         } catch (IOException ex) {
             logger.error(ex.getMessage());
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+        }
+
+    }
+
+    public void storeUserAvatar(String userName, MultipartFile file) {
+        if (file.getContentType() == null || file.getContentType().isEmpty()
+                || !file.getContentType().startsWith("image")) {
+            throw new FileStorageException("Sorry! This extension is not allowed to upload!");
+        }
+
+        if (file.getSize() > 520_000L) {
+            throw new MaxUploadSizeExceededException(520_000L);
+        }
+
+        User user = userDAO.findByUsername(userName);
+        try {
+            user.setAvatar(file.getBytes());
+            userDAO.save(user);
+        } catch (IOException e) {
+            logger.error("Can not save user avatar: {}", e.getMessage());
         }
 
     }

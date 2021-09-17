@@ -88,6 +88,7 @@ create sequence USER_SEQ start 1 increment 1;
         ACCESS_TOKEN varchar(255),
         CREATED_DATE timestamp,
         DISPLAY_NAME varchar(255),
+		AVATAR_IMAGE bytea,
         EMAIL varchar(255),
         PASSWORD varchar(255),
         UPDATED_DATE timestamp,

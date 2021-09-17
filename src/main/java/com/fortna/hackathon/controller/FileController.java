@@ -55,4 +55,11 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Upload successfully!"));
     }
 
+    @PostMapping(value = "/user/avatar", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadUserAvatar(@RequestParam("file") MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        fileService.storeUserAvatar(authentication.getName(), file);
+        return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Upload successfully!"));
+    }
+
 }

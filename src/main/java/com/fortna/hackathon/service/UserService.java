@@ -10,4 +10,5 @@ public interface UserService {
     List<User> findAll();
     User findOne(String username);
     void updateAccessToken(String token, String username);
+    String getUserAvatar(String username);
 }

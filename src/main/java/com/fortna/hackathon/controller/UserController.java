@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fortna.hackathon.dto.AppResponse;
 import com.fortna.hackathon.dto.LoginRequest;
@@ -73,6 +74,13 @@ public class UserController {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Logout successfully!"));
+    }
+
+    @GetMapping(value = "/user/avatar", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserAvatar(HttpServletRequest request, HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String data = userService.getUserAvatar(authentication.getName());
+        return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, data));
     }
 
 }

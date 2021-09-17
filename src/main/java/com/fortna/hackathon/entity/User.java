@@ -3,6 +3,8 @@ package com.fortna.hackathon.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Type;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -26,19 +28,29 @@ public class User {
 
     @Column(name = "DISPLAY_NAME")
     private String displayName;
-    
+
     @Column(name = "EMAIL")
+    @JsonIgnore
     private String email;
+
+    @Lob
+    @Type(type = "org.hibernate.type.ImageType")
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "AVATAR_IMAGE")
+    @JsonIgnore
+    private byte[] avatar;
 
     @Column(name = "ACCESS_TOKEN")
     @JsonIgnore
     private String accessToken;
 
     @Column(name = "CREATED_DATE")
+    @JsonIgnore
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
 
     @Column(name = "UPDATED_DATE")
+    @JsonIgnore
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
 
@@ -55,7 +67,7 @@ public class User {
     private List<Match> winMatches;
 
     // Getters and Setters
-    
+
     public long getId() {
         return id;
     }
@@ -110,6 +122,14 @@ public class User {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
     }
 
     public Date getCreatedDate() {

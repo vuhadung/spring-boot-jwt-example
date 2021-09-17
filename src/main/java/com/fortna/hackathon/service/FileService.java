@@ -9,4 +9,7 @@ public interface FileService {
     void generateEntryPoint(String dir, String langId);
     
     void storeCourseFile(String courseName, MultipartFile file);
+    
+    void storeUserAvatar(String userName, MultipartFile file);
+    
 }
