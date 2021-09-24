@@ -2,6 +2,7 @@ package com.fortna.hackathon.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.fortna.hackathon.aspect.SwitchOff;
 import com.fortna.hackathon.dto.AppResponse;
 import com.fortna.hackathon.dto.LoginRequest;
 import com.fortna.hackathon.dto.UserDto;
@@ -49,9 +50,10 @@ public class UserController {
         return ResponseEntity.ok(new AppResponse(null, token));
     }
 
+    @SwitchOff(epochTime = "1633910400")
     @PreAuthorize("permitAll()")
     @PostMapping(value = "/auth/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveUser(@RequestBody UserDto user) {
+    public ResponseEntity<?> saveUser(@Valid @RequestBody UserDto user) {
         User entity = userService.findOne(user.getUsername());
         if (entity == null) {
             userService.save(user);
