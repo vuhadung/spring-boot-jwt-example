@@ -22,7 +22,5 @@ services:
       - GUNICORN_THREADS=1
       - PGADMIN_DEFAULT_EMAIL=hackathon@fortna.com
       - PGADMIN_DEFAULT_PASSWORD=123456
-    depends_on:
-      - db
-volumes:
-  database-data: # named volumes can be managed easier using docker-compose
+    # depends_on:
+    #   - db
