@@ -4,3 +4,8 @@ sudo -u postgres psql
 	\l (list all database)
 	create user root with encrypted password 'root';
 	create database hackathon;
+
+sudo -u postgres psql -c "create user root with encrypted password 'root';"
+sudo -u postgres psql -c "create database hackathon;"
+sudo -u postgres psql -f scripts.sql postgresql://root:root@localhost:5432/hackathon
+sudo -u postgres psql "dbname=hackathon user=root password=root host=localhost" -f scripts.sql
