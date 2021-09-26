@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:12.8
+    container_name: hackathon-db
+    restart: "no"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./src/sql/scripts.sql:/docker-entrypoint-initdb.d/scripts.sql
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=hackathon
+
+  pg_admin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin4
+    ports:
+      - "15432:80"
+    environment:
+      - GUNICORN_THREADS=1
+      - PGADMIN_DEFAULT_EMAIL=hackathon@fortna.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    depends_on:
+      - db
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose
