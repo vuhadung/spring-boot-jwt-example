@@ -34,17 +34,17 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(FileStorageException.class)
     protected ResponseEntity<?> handleUploadFileException(RuntimeException ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AppResponse(ex.getMessage(), null));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AppResponse(ex.getMessage(), null));
     }
 
     @ExceptionHandler(RunGameException.class)
     protected ResponseEntity<?> handleExecuteGameException(RuntimeException ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AppResponse(ex.getMessage(), null));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AppResponse(ex.getMessage(), null));
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     protected ResponseEntity<?> handleMaxSizeException(RuntimeException ex, WebRequest req) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new AppResponse("File is too large!", null));
     }
 

@@ -77,14 +77,14 @@ public class FileServiceImpl implements FileService {
             if (lang.get().getName().toLowerCase().contains("java")) {
                 // Java
                 String[] extensions = fileName.split(Pattern.quote("."));
-                if (extensions.length > 2 && !"jar".equals(extensions[extensions.length - 1])) {
+                if (extensions.length >= 2 && !"jar".equals(extensions[extensions.length - 1])) {
                     throw new FileStorageException("Sorry! This extension is not allowed to upload!" + fileName);
                 }
                 newFileName = "runme" + "." + extensions[extensions.length - 1];
             } else {
                 // Cpp
                 String[] extensions = fileName.split(Pattern.quote("."));
-                if (extensions.length > 2) {
+                if (extensions.length >= 2) {
                     throw new FileStorageException("Sorry! This extension is not allowed to upload!" + fileName);
                 }
                 newFileName = "runme";
@@ -168,7 +168,7 @@ public class FileServiceImpl implements FileService {
 
             String newFileName = null;
             String[] extensions = fileName.split(Pattern.quote("."));
-            if (extensions.length > 2 && !"smrjky".equals(extensions[extensions.length - 1])) {
+            if (extensions.length >= 2 && !"smrjky".equals(extensions[extensions.length - 1])) {
                 throw new FileStorageException("Sorry! This extension is not allowed to upload!");
             }
 
