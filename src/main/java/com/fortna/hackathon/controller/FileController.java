@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fortna.hackathon.dto.AppResponse;
+import com.fortna.hackathon.service.CourseService;
 import com.fortna.hackathon.service.FileService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,6 +25,9 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private CourseService courseService;
+
     /**
      * 
      * @param courseId
@@ -33,8 +37,13 @@ public class FileController {
      */
     @PostMapping(value = "/player/upload", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadPlayerFile(@RequestParam("language") String langId,
-            @RequestParam("file") MultipartFile file) {
-        // TODO validate submission time
+            @RequestParam("course") String courseId, @RequestParam("file") MultipartFile file) {
+
+        if (!courseService.canSubmitForCourse(courseId)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AppResponse("Can not submit for this course", null));
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         fileService.storePlayerFile(authentication.getName(), langId, file);
         fileService.generateEntryPoint(authentication.getName(), langId);
@@ -50,8 +59,8 @@ public class FileController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/course/upload", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadCourseFile(@RequestParam("name") String courseName,
-            @RequestParam("file") MultipartFile file) {
-        fileService.storeCourseFile(courseName, file);
+            @RequestParam("deadline") String deadline, @RequestParam("file") MultipartFile file) {
+        fileService.storeCourseFile(courseName, deadline, file);
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Upload successfully!"));
     }
 

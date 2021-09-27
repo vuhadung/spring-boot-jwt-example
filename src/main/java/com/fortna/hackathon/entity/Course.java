@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "COURSES")
 public class Course {
@@ -29,17 +31,21 @@ public class Course {
     private Date deadline;
     
     @Column(name = "IS_BACKUP")
-    private Boolean isBackup;
+    @JsonIgnore
+    private Boolean backup;
     
     @Column(name = "CREATED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     private Date createdDate;
     
     @Column(name = "UPDATED_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     private Date updatedDate;
     
     @Column(name = "PATH_TO_FILE")
+    @JsonIgnore
     private String pathToFile;
 
     public Long getId() {
@@ -82,12 +88,12 @@ public class Course {
         this.deadline = deadline;
     }
 
-    public Boolean isBackup() {
-        return isBackup;
+    public Boolean getBackup() {
+        return backup;
     }
 
     public void setBackup(boolean isBackup) {
-        this.isBackup = isBackup;
+        this.backup = isBackup;
     }
 
     public String getPathToFile() {

@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -154,7 +153,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    public void storeCourseFile(String courseName, MultipartFile file) {
+    public void storeCourseFile(String courseName, String deadline, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
@@ -183,6 +182,17 @@ public class FileServiceImpl implements FileService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             course.setPathToFile(targetLocation.toString());
             course.setUpdatedDate(new Date());
+
+            if (deadline != null && !deadline.isEmpty()) {
+                // normal course
+                course.setBackup(false);
+                long epoch = Long.parseLong(deadline);
+                Date date = new Date(epoch * 1000);
+                course.setDeadline(date);
+            } else {
+                // backup course
+                course.setBackup(true);
+            }
             courseDAO.save(course);
 
             return;
