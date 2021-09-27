@@ -12,15 +12,32 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=hackathon
-
-  pg_admin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin4
-    ports:
-      - "15432:80"
-    environment:
-      - GUNICORN_THREADS=1
-      - PGADMIN_DEFAULT_EMAIL=hackathon@fortna.com
-      - PGADMIN_DEFAULT_PASSWORD=123456
+  # pg_admin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: pgadmin4
+  #   ports:
+  #     - "15432:80"
+  #   environment:
+  #     - GUNICORN_THREADS=1
+  #     - PGADMIN_DEFAULT_EMAIL=hackathon@fortna.com
+  #     - PGADMIN_DEFAULT_PASSWORD=123456
     # depends_on:
     #   - db
+  backend:
+    image: openjdk:8
+    container_name: hackathon-be
+    restart: "no"
+    ports:
+      - 8088:8088
+    volumes:
+      - ./target/simple-web-0.0.1-SNAPSHOT.jar:/home/hackathon-be.jar
+      - ./data:/data
+    # environment:
+    #   - CONNECTION_URL=jdbc:postgresql://hackathon-db:5432/hackathon
+    #   - CONNECTION_USERNAME=root
+    #   - CONNECTION_PASSWORD=root
+    #   - JVM_OPTS="--spring.datasource.url=jdbc:postgresql://hackathon-db:5432/hackathon --spring.datasource.username=root --spring.datasource.password=root --file.game-dir=/data"
+    command: bash -c "java -jar /home/hackathon-be.jar --spring.datasource.url=jdbc:postgresql://hackathon-db:5432/hackathon --spring.datasource.username=root --spring.datasource.password=root --file.game-dir=/data"
+    depends_on:
+      - db
+
