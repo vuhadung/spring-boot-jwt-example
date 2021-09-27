@@ -11,4 +11,5 @@ public interface UserService {
     User findOne(String username);
     void updateAccessToken(String token, String username);
     String getUserAvatar(String username);
+    boolean changePassword(String username, String oldPwd, String newPwd);
 }

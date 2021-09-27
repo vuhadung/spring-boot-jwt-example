@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fortna.hackathon.aspect.SwitchOff;
 import com.fortna.hackathon.dto.AppResponse;
+import com.fortna.hackathon.dto.ChangePasswordDto;
 import com.fortna.hackathon.dto.LoginRequest;
 import com.fortna.hackathon.dto.UserDto;
 import com.fortna.hackathon.entity.User;
@@ -41,7 +42,7 @@ public class UserController {
 
     @PreAuthorize("permitAll()")
     @PostMapping(value = "/auth/login", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> generateToken(@RequestBody LoginRequest loginUser) throws AuthenticationException {
+    public ResponseEntity<?> generateToken(@Valid @RequestBody LoginRequest loginUser) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -84,11 +85,30 @@ public class UserController {
         String data = userService.getUserAvatar(authentication.getName());
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, data));
     }
-    
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllUsers() {
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, userService.findAll()));
     }
 
+    @PostMapping(value = "/auth/change-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changePassword(HttpServletRequest request, HttpServletResponse response,
+            @Valid @RequestBody ChangePasswordDto changePasswordDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            if (userService.changePassword(authentication.getName(), changePasswordDto.getOldPassword(),
+                    changePasswordDto.getNewPassword())) {
+                new SecurityContextLogoutHandler().logout(request, response, authentication);
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new AppResponse(null, "Change password successfully!"));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new AppResponse("Error while changing user password", null));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new AppResponse("Error while changing user password", null));
+        }
+    }
 }

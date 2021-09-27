@@ -1,6 +1,7 @@
 package com.fortna.hackathon.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,8 +13,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fortna.hackathon.dao.UserDao;
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userDao.findByUsername(username);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public User save(UserDto user) {
 
@@ -95,9 +97,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public void updateAccessToken(String token, String username) {
         userDao.updateAccessTokenByUsername(token, username);
-
     }
 
+    @SuppressWarnings("restriction")
     @Override
     @Transactional
     public String getUserAvatar(String username) {
@@ -107,4 +109,20 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         }
         return new String();
     }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    @Transactional
+    public boolean changePassword(String username, String oldPwd, String newPwd) {
+        User user = userDao.findByUsername(username);
+        PasswordEncoder encoder = new MessageDigestPasswordEncoder("MD5");
+        if (!encoder.matches(oldPwd, user.getPassword()))
+            return false;
+        user.setPassword(encoder.encode(newPwd));
+        user.setAccessToken("");
+        user.setUpdatedDate(new Date());
+        userDao.save(user);
+        return true;
+    }
+
 }

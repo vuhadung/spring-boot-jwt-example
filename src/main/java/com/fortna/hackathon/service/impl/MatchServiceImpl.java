@@ -4,7 +4,12 @@ import java.io.File;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortna.hackathon.config.FileStorageConfiguration;
+import com.fortna.hackathon.dao.CourseDao;
 import com.fortna.hackathon.dao.MatchDao;
 import com.fortna.hackathon.dao.SubmissionDao;
 import com.fortna.hackathon.dao.UserDao;
+import com.fortna.hackathon.dto.CreateMatchDto;
 import com.fortna.hackathon.dto.GameLog;
 import com.fortna.hackathon.dto.GameLog.PlayerLog;
+import com.fortna.hackathon.dto.MatchMgmtDto;
 import com.fortna.hackathon.entity.Course;
 import com.fortna.hackathon.entity.Match;
 import com.fortna.hackathon.entity.Submission;
@@ -41,6 +49,9 @@ public class MatchServiceImpl implements MatchService {
     private UserDao userDao;
 
     @Autowired
+    private CourseDao courseDao;
+
+    @Autowired
     private MatchDao matchDao;
 
     @Autowired
@@ -53,6 +64,8 @@ public class MatchServiceImpl implements MatchService {
     public void executeMatch(long id) {
         executeMatchWithCourse(id, true, false);
     }
+
+    /*---------------------------- MATCH EXECUTION -----------------------------*/
 
     private void executeMatchWithCourse(long id, boolean isMainCourse, boolean forceStop) {
         try {
@@ -303,4 +316,47 @@ public class MatchServiceImpl implements MatchService {
 
     }
 
+    /*---------------------------- MATCH MANAGEMENT -----------------------------*/
+
+    @Override
+    public boolean createMatch(CreateMatchDto matchDto) {
+        Optional<User> player0 = userDao.findById(matchDto.getFirstPlayerId());
+        Optional<User> player1 = userDao.findById(matchDto.getSecondPlayerId());
+        Optional<Course> mainCourse = courseDao.findById(matchDto.getMainCourseId());
+        Optional<Course> backupCourse = courseDao.findById(matchDto.getBackupCourseId());
+        if (!player0.isPresent() || !player1.isPresent() || !mainCourse.isPresent() || !backupCourse.isPresent()) {
+            logger.error("User or course not found!");
+            return false;
+        }
+
+        Match match = new Match();
+        match.setPlayer0(player0.get());
+        match.setPlayer1(player1.get());
+        match.setCourse(mainCourse.get());
+        match.setBackupCourse(backupCourse.get());
+        match.setCreatedDate(new Date());
+        match.setResultPublished(false);
+        match.setUpdatedDate(new Date());
+        matchDao.save(match);
+
+        return true;
+    }
+
+    @Override
+    public List<MatchMgmtDto> getAllMatchesForAdmin() {
+        List<Match> matches = matchDao.findAll();
+        List<MatchMgmtDto> results = matches.stream().map(m -> {
+            MatchMgmtDto dto = new MatchMgmtDto();
+            dto.setId(m.getId());
+            dto.setFirstPlayer(m.getPlayer0().getDisplayName());
+            dto.setSecondPlayer(m.getPlayer1().getDisplayName());
+            dto.setAwayMatchWinner(m.getAwayMatchWinner() != null ? m.getAwayMatchWinner().getDisplayName() : "");
+            dto.setHomeMatchWinner(m.getHomeMatchWinner() != null ? m.getHomeMatchWinner().getDisplayName() : "");
+            dto.setFinalWinner(m.getFinalWinner() != null ? m.getFinalWinner().getDisplayName() : "");
+            dto.setErrorMessage(m.getErrorMessage() != null ? m.getErrorMessage() : "");
+            dto.setResultPublished(m.isResultPublished());
+            return dto;
+        }).collect(Collectors.toList());
+        return results;
+    }
 }
