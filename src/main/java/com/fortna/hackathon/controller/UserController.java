@@ -84,5 +84,11 @@ public class UserController {
         String data = userService.getUserAvatar(authentication.getName());
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, data));
     }
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, userService.findAll()));
+    }
 
 }

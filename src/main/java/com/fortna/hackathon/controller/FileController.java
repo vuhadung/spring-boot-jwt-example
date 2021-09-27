@@ -59,7 +59,8 @@ public class FileController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/course/upload", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadCourseFile(@RequestParam("name") String courseName,
-            @RequestParam("deadline") String deadline, @RequestParam("file") MultipartFile file) {
+            @RequestParam(required = false, name = "deadline") String deadline,
+            @RequestParam("file") MultipartFile file) {
         fileService.storeCourseFile(courseName, deadline, file);
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Upload successfully!"));
     }
