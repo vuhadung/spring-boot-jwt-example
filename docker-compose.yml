@@ -32,6 +32,7 @@ services:
     volumes:
       - ./target/simple-web-0.0.1-SNAPSHOT.jar:/home/hackathon-be.jar
       - ./data:/data
+      - ./logs:/logs
     environment:
       - CONNECTION_URL=jdbc:postgresql://hackathon-db:5432/hackathon
       - CONNECTION_USERNAME=root
