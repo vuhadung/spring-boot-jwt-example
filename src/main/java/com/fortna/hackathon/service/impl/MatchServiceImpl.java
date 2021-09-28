@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortna.hackathon.config.FileStorageConfiguration;
 import com.fortna.hackathon.dao.CourseDao;
 import com.fortna.hackathon.dao.MatchDao;
+import com.fortna.hackathon.dao.RoundDao;
 import com.fortna.hackathon.dao.SubmissionDao;
 import com.fortna.hackathon.dao.UserDao;
 import com.fortna.hackathon.dto.CreateMatchDto;
@@ -29,6 +30,7 @@ import com.fortna.hackathon.dto.GameLog.PlayerLog;
 import com.fortna.hackathon.dto.MatchMgmtDto;
 import com.fortna.hackathon.entity.Course;
 import com.fortna.hackathon.entity.Match;
+import com.fortna.hackathon.entity.Round;
 import com.fortna.hackathon.entity.Submission;
 import com.fortna.hackathon.entity.User;
 import com.fortna.hackathon.exception.RunGameException;
@@ -48,6 +50,9 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     private CourseDao courseDao;
+
+    @Autowired
+    private RoundDao roundDao;
 
     @Autowired
     private MatchDao matchDao;
@@ -318,16 +323,19 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public boolean createMatch(CreateMatchDto matchDto) {
+        Optional<Round> round = roundDao.findById(matchDto.getRoundId());
         Optional<User> player0 = userDao.findById(matchDto.getFirstPlayerId());
         Optional<User> player1 = userDao.findById(matchDto.getSecondPlayerId());
         Optional<Course> mainCourse = courseDao.findById(matchDto.getMainCourseId());
         Optional<Course> backupCourse = courseDao.findById(matchDto.getBackupCourseId());
-        if (!player0.isPresent() || !player1.isPresent() || !mainCourse.isPresent() || !backupCourse.isPresent()) {
+        if (!round.isPresent() || !player0.isPresent() || !player1.isPresent() || !mainCourse.isPresent()
+                || !backupCourse.isPresent()) {
             logger.error("User or course not found!");
             return false;
         }
 
         Match match = new Match();
+        match.setRound(round.get());
         match.setPlayer0(player0.get());
         match.setPlayer1(player1.get());
         match.setCourse(mainCourse.get());

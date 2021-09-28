@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -26,11 +25,6 @@ public class Course {
 
     @Column(name = "COURSE_NAME")
     private String name;
-
-    @Column(name = "SUBMISSION_DEADLINE")
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-    private Date deadline;
 
     @Column(name = "IS_BACKUP")
     @JsonIgnore
@@ -80,14 +74,6 @@ public class Course {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
-    }
-
-    public Date getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
     }
 
     public Boolean getBackup() {

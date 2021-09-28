@@ -25,6 +25,11 @@ public class Match {
     @SequenceGenerator(name = "MATCH_GENERATOR", sequenceName = "MATCH_SEQ", allocationSize = 1)
     private Long id;
 
+    // Round
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ROUND_ID")
+    private Round round;
+
     // Players
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PLAYER_0_ID")
@@ -199,6 +204,14 @@ public class Match {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public Round getRound() {
+        return round;
+    }
+
+    public void setRound(Round round) {
+        this.round = round;
     }
 
 }

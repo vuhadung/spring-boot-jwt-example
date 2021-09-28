@@ -1,6 +1,8 @@
 package com.fortna.hackathon.dto;
 
 public class CreateMatchDto {
+    
+    private Long roundId;
 
     private Long firstPlayerId;
 
@@ -40,6 +42,14 @@ public class CreateMatchDto {
 
     public void setBackupCourseId(Long backupCourseId) {
         this.backupCourseId = backupCourseId;
+    }
+
+    public Long getRoundId() {
+        return roundId;
+    }
+
+    public void setRoundId(Long roundId) {
+        this.roundId = roundId;
     }
 
 }

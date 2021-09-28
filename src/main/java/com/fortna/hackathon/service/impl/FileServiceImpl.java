@@ -153,7 +153,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    public void storeCourseFile(String courseName, String deadline, MultipartFile file) {
+    public void storeCourseFile(String courseName, boolean isBackup, MultipartFile file) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
@@ -183,12 +183,9 @@ public class FileServiceImpl implements FileService {
             course.setPathToFile(targetLocation.toString());
             course.setUpdatedDate(new Date());
 
-            if (deadline != null && !deadline.isEmpty()) {
+            if (!isBackup) {
                 // normal course
                 course.setBackup(false);
-                long epoch = Long.parseLong(deadline);
-                Date date = new Date(epoch * 1000);
-                course.setDeadline(date);
             } else {
                 // backup course
                 course.setBackup(true);

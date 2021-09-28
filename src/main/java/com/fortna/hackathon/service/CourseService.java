@@ -10,6 +10,6 @@ public interface CourseService {
 
     public List<Course> getCoursesByIsBackup(boolean isBackup);
     
-    public boolean canSubmitForCourse(String courseId);
+    public boolean canSubmit(String roundId);
 
 }

@@ -2,6 +2,7 @@ drop table if exists MATCHES cascade;
 drop table if exists SUBMISSIONS cascade;
 drop table if exists COURSES cascade;
 drop table if exists LANGUAGES cascade;
+drop table if exists ROUNDS cascade;
 drop table if exists USER_ROLE cascade;
 drop table if exists ROLES cascade;
 drop table if exists USERS cascade;
@@ -13,6 +14,7 @@ drop sequence if exists ROLE_SEQ;
 drop sequence if exists SUBMISSION_SEQ;
 drop sequence if exists USER_ROLE_SEQ;
 drop sequence if exists USER_SEQ;
+drop sequence if exists ROUND_SEQ;
 
 create sequence COURSE_SEQ start 1 increment 1;
 create sequence LANG_SEQ start 1 increment 1;
@@ -21,12 +23,12 @@ create sequence ROLE_SEQ start 1 increment 1;
 create sequence SUBMISSION_SEQ start 1 increment 1;
 create sequence USER_ROLE_SEQ start 1 increment 1;
 create sequence USER_SEQ start 1 increment 1;
+create sequence ROUND_SEQ start 1 increment 1;
 
-    create table COURSES (
+ create table COURSES (
        ID int8 not null,
-        CREATED_DATE timestamp,
-        SUBMISSION_DEADLINE timestamp,
         IS_BACKUP boolean,
+        CREATED_DATE timestamp,
         COURSE_NAME varchar(255),
         PATH_TO_FILE varchar(255),
         UPDATED_DATE timestamp,
@@ -56,6 +58,7 @@ create sequence USER_SEQ start 1 increment 1;
         PARENT_MATCH_1_ID int8,
         PLAYER_0_ID int8,
         PLAYER_1_ID int8,
+        ROUND_ID int8,
         primary key (ID)
     );
 
@@ -63,6 +66,14 @@ create sequence USER_SEQ start 1 increment 1;
        ID int8 not null,
         DESCRIPTION varchar(255),
         NAME varchar(255),
+        primary key (ID)
+    );
+
+    create table ROUNDS (
+       ID int8 not null,
+        END_DATE timestamp,
+        ROUND_NAME varchar(255),
+        START_DATE timestamp,
         primary key (ID)
     );
 
@@ -86,9 +97,9 @@ create sequence USER_SEQ start 1 increment 1;
     create table USERS (
        ID int8 not null,
         ACCESS_TOKEN varchar(255),
+        AVATAR_IMAGE bytea,
         CREATED_DATE timestamp,
         DISPLAY_NAME varchar(255),
-		AVATAR_IMAGE bytea,
         EMAIL varchar(255),
         PASSWORD varchar(255),
         UPDATED_DATE timestamp,
@@ -141,6 +152,11 @@ create sequence USER_SEQ start 1 increment 1;
        foreign key (PLAYER_1_ID) 
        references USERS;
 
+    alter table MATCHES 
+       add constraint FKehta0qei0ydleb73xjyxv9aob 
+       foreign key (ROUND_ID) 
+       references ROUNDS;
+
     alter table SUBMISSIONS 
        add constraint FKrao7vakvldnp9rvn93q2nlhdg 
        foreign key (LANGUAGE_ID) 
@@ -160,7 +176,7 @@ create sequence USER_SEQ start 1 increment 1;
        add constraint FKr4wtg8onirvrqs1ailjjjsx0y 
        foreign key (USER_ID) 
        references USERS;
-
+	
 -- Initial data 	   
 INSERT INTO ROLES (ID, DESCRIPTION, NAME) VALUES (NEXTVAL('ROLE_SEQ'), 'Admin role', 'ADMIN');
 INSERT INTO ROLES (ID, DESCRIPTION, NAME) VALUES (NEXTVAL('ROLE_SEQ'), 'User role', 'USER');

@@ -22,16 +22,18 @@
 						{
 							"key": "language",
 							"value": "2",
+							"description": "id of language get from drop-down list",
 							"type": "text"
 						},
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/home/dungvu/Working/Share_SC/Hackathon/Players/Bob/runme.jar"
+							"src": []
 						},
 						{
-							"key": "course",
+							"key": "round",
 							"value": "1",
+							"description": "id of round get from drop-down list",
 							"type": "text"
 						}
 					]
@@ -53,6 +55,9 @@
 		},
 		{
 			"name": "Upload Course",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
 			"request": {
 				"method": "POST",
 				"header": [
@@ -68,7 +73,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/D:/Share_SC/Hackathon/SamurAI/samples/course01.smrjky"
+							"src": []
 						},
 						{
 							"key": "name",
@@ -76,10 +81,10 @@
 							"type": "text"
 						},
 						{
-							"key": "deadline",
-							"value": "",
-							"type": "text",
-							"disabled": true
+							"key": "isBackup",
+							"value": "0",
+							"description": "0=false, 1=true",
+							"type": "text"
 						}
 					]
 				},
@@ -111,7 +116,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"firstPlayerId\": 3,\r\n    \"secondPlayerId\": 3,\r\n    \"mainCourseId\": 3,\r\n    \"backupCourseId\": 3\r\n}",
+					"raw": "{\r\n    \"roundId\": 1,\r\n    \"firstPlayerId\": 3,\r\n    \"secondPlayerId\": 3,\r\n    \"mainCourseId\": 3,\r\n    \"backupCourseId\": 3\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -133,6 +138,40 @@
 			"response": []
 		},
 		{
+			"name": "Create Round",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"roundName\": \"round 1\",\r\n    \"startDate\": 1632813000,\r\n    \"endDate\": 1633046400\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/round",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"round"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get All Matches (for admin only)",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -148,7 +187,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"firstPlayerId\": 3,\r\n    \"secondPlayerId\": 3,\r\n    \"mainCourseId\": 3,\r\n    \"backupCourseId\": 3\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -164,6 +203,75 @@
 					"port": "8088",
 					"path": [
 						"match"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Rounds(for admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/round/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"round",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Rounds(for user)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/round",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"round"
 					]
 				}
 			},
@@ -233,13 +341,6 @@
 					"path": [
 						"user",
 						"avatar"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": "",
-							"disabled": true
-						}
 					]
 				}
 			},
@@ -551,13 +652,15 @@
 					"query": [
 						{
 							"key": "turn",
-							"value": "0"
+							"value": "0",
+							"description": "can only be 0 or 1 (for away match and home match)"
 						}
 					],
 					"variable": [
 						{
 							"key": "id",
-							"value": "1"
+							"value": "1",
+							"description": "id of match"
 						}
 					]
 				}

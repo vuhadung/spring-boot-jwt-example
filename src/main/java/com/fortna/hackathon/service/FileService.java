@@ -8,7 +8,7 @@ public interface FileService {
 
     void generateEntryPoint(String dir, String langId);
     
-    void storeCourseFile(String courseName, String deadline, MultipartFile file);
+    void storeCourseFile(String courseName, boolean isBackup, MultipartFile file);
     
     void storeUserAvatar(String userName, MultipartFile file);
     

@@ -22,6 +22,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/course", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllNormalCourses() {
         List<Course> courses = courseService.getCoursesByIsBackup(false);

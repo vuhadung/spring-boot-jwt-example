@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fortna.hackathon.dao.CourseDao;
+import com.fortna.hackathon.dao.RoundDao;
 import com.fortna.hackathon.entity.Course;
+import com.fortna.hackathon.entity.Round;
 import com.fortna.hackathon.service.CourseService;
 
 @Service(value = "courseService")
@@ -18,6 +20,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseDao courseDAO;
+    
+    @Autowired
+    private RoundDao roundDAO;
 
     @Override
     public List<Course> getAllCourses() {
@@ -30,11 +35,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public boolean canSubmitForCourse(String courseId) {
-        Optional<Course> course = courseDAO.findById(Long.valueOf(courseId));
-        if (!course.isPresent())
+    public boolean canSubmit(String roundId) {
+        Optional<Round> round = roundDAO.findById(Long.valueOf(roundId));
+        if (!round.isPresent())
             return false;
-        if (new Date().after(course.get().getDeadline()))
+        if (new Date().after(round.get().getEndDate()))
             return false;
         return true;
     }
