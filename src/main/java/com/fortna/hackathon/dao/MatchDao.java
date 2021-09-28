@@ -12,6 +12,6 @@ public interface MatchDao extends CrudRepository<Match, Long> {
 
     Match findById(long id);
 
-    List<Match> findAll();
+    List<Match> findAllByOrderByIdAsc();
 
 }

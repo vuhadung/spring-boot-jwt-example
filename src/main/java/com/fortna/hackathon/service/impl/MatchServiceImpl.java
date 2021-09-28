@@ -7,8 +7,6 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -344,7 +342,7 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public List<MatchMgmtDto> getAllMatchesForAdmin() {
-        List<Match> matches = matchDao.findAll();
+        List<Match> matches = matchDao.findAllByOrderByIdAsc();
         List<MatchMgmtDto> results = matches.stream().map(m -> {
             MatchMgmtDto dto = new MatchMgmtDto();
             dto.setId(m.getId());
