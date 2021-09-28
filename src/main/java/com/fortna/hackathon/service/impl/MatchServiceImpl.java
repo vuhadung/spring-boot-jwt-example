@@ -357,4 +357,41 @@ public class MatchServiceImpl implements MatchService {
         }).collect(Collectors.toList());
         return results;
     }
+
+    @Override
+    public void publishMatchesResult(List<Long> matchIds) {
+        for (Long id : matchIds) {
+            Optional<Match> m = matchDao.findById(id);
+            if (m.isPresent()) {
+                Match match = m.get();
+                match.setResultPublished(true);
+                matchDao.save(match);
+            }
+        }
+    }
+
+    @Override
+    public boolean canDownloadMatchResult(String username, Long matchId) {
+        Optional<Match> m = matchDao.findById(matchId);
+        if (!m.isPresent()) {
+            return false;
+        }
+        // Admin can download any match result
+        User user = userDao.findByUsername(username);
+        if (user.getRoles().stream().anyMatch(role -> "ADMIN".equals(role.getRole().getName()))) {
+            return true;
+        }
+        Match match = m.get();
+        return match.isResultPublished();
+    }
+
+    @Override
+    public String getPathToMatchResult(long matchId, boolean isAwayMatch) {
+        Match match = matchDao.findById(matchId);
+        if (isAwayMatch) {
+            return match.getPathToAwayMatchResult() != null ? match.getPathToAwayMatchResult() : new String();
+        } else {
+            return match.getPathToHomeMatchResult() != null ? match.getPathToHomeMatchResult() : new String();
+        }
+    }
 }

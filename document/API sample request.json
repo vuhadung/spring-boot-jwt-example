@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "725d9163-34c5-4ce6-84a5-fbfe9d83c551",
+		"_postman_id": "c325a060-5e95-44b2-adc4-9e76c5ee4d91",
 		"name": "Spring Web app",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -204,7 +204,7 @@
 					"query": [
 						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -237,7 +237,7 @@
 					"query": [
 						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -455,7 +455,7 @@
 		{
 			"name": "Game execution",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Access-token",
@@ -474,6 +474,85 @@
 						"match",
 						"execute",
 						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Publish match result",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Access-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    1,\r\n    2,\r\n    3\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/match/publish-result",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"match",
+						"publish-result"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download match result",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    1,\r\n    2,\r\n    3\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/match/:id?turn=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"match",
+						":id"
+					],
+					"query": [
+						{
+							"key": "turn",
+							"value": "0"
+						}
 					],
 					"variable": [
 						{

@@ -14,5 +14,11 @@ public interface MatchService {
     boolean createMatch(CreateMatchDto matchDto);
     
     List<MatchMgmtDto> getAllMatchesForAdmin();
+    
+    void publishMatchesResult(List<Long> matchIds);
+    
+    boolean canDownloadMatchResult(String username, Long matchId);
+    
+    String getPathToMatchResult(long matchId, boolean isAwayMatch);
 
 }
