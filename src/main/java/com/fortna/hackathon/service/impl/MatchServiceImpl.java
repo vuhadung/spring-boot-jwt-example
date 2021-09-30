@@ -105,90 +105,101 @@ public class MatchServiceImpl implements MatchService {
 
     private String runGameAndFindWinner(long id, boolean isMainCourse, boolean isAwayMatch) throws Exception {
         Match match = matchDao.findById(id);
-        Course course = null;
-        User player0 = null;
-        User player1 = null;
-        Round round = match.getRound();
-        if (isMainCourse) {
-            course = round.getCourse();
+
+        if (match.getPlayer0() != null && match.getPlayer1() != null) {
+            Course course = null;
+            User player0 = null;
+            User player1 = null;
+
+            Round round = match.getRound();
+            if (isMainCourse) {
+                course = round.getCourse();
+            } else {
+                course = round.getBackupCourse();
+                if (course == null) {
+                    throw new Exception("Backup course is not found");
+                }
+            }
+
+            if (isAwayMatch) {
+                player0 = match.getPlayer0();
+                player1 = match.getPlayer1();
+            } else {
+                player0 = match.getPlayer1();
+                player1 = match.getPlayer0();
+            }
+
+            Submission filePlayer0 = submissionDao.findByUserId(player0.getId());
+            Submission filePlayer1 = submissionDao.findByUserId(player1.getId());
+
+            // prepare command arguments
+            String fullPathToOfficialDir = Paths.get(this.fileStorageConfig.getOfficialDir()).toAbsolutePath()
+                    .normalize().toString();
+            String fullPathToCourseDir = Paths.get(this.fileStorageConfig.getCourseDir()).toAbsolutePath().normalize()
+                    .toString();
+            String fullPathToPlayerDir = Paths.get(this.fileStorageConfig.getPlayerDir()).toAbsolutePath().normalize()
+                    .toString();
+            String fullPathToResultDir = Paths.get(this.fileStorageConfig.getResultDir()).toAbsolutePath().normalize()
+                    .toString();
+            // need to create directory before create result file
+            Files.createDirectories(Paths.get(this.fileStorageConfig.getResultDir()).toAbsolutePath().normalize());
+
+            String pathToOfficial = new StringBuilder().append(fullPathToOfficialDir).append(File.separator)
+                    .append(GameConstant.GAME_OFFICIAL_NAME).toString();
+            String pathToCourse = new StringBuilder().append(fullPathToCourseDir).append(File.separator)
+                    .append("course_").append(course.getId()).append(GameConstant.COURSE_FILE_EXTENSION).toString();
+
+            String pathToPlayer0 = null;
+            if (filePlayer0.getLanguage().getName().toLowerCase().contains("java")) {
+                pathToPlayer0 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
+                        .append(player0.getUsername()).append(File.separator).append("runme.sh").toString();
+            } else {
+                pathToPlayer0 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
+                        .append(player0.getUsername()).append(File.separator).append("runme").toString();
+            }
+            String nameOfPlayer0 = player0.getUsername();
+
+            String pathToPlayer1 = null;
+            if (filePlayer1.getLanguage().getName().toLowerCase().contains("java")) {
+                pathToPlayer1 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
+                        .append(player1.getUsername()).append(File.separator).append("runme.sh").toString();
+            } else {
+                pathToPlayer1 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
+                        .append(player1.getUsername()).append(File.separator).append("runme").toString();
+            }
+            String nameOfPlayer1 = player1.getUsername();
+
+            String pathToResultFile = null;
+            if (isAwayMatch) {
+                pathToResultFile = new StringBuilder().append(fullPathToResultDir).append(File.separator)
+                        .append("match_").append(id).append("_away.txt").toString();
+            } else {
+                pathToResultFile = new StringBuilder().append(fullPathToResultDir).append(File.separator)
+                        .append("match_").append(id).append("_home.txt").toString();
+            }
+
+            // run game
+            ProcessBuilder processBuilder = null;
+            Process process = null;
+
+            logger.info("Running game {} between {} and {}", id, nameOfPlayer0, nameOfPlayer1);
+            logger.info("Command is: {} {} {} {} {} {}", pathToOfficial, pathToCourse, pathToPlayer0, nameOfPlayer0,
+                    pathToPlayer1, nameOfPlayer1);
+            processBuilder = new ProcessBuilder(pathToOfficial, pathToCourse, pathToPlayer0, nameOfPlayer0,
+                    pathToPlayer1, nameOfPlayer1);
+            processBuilder.redirectOutput(Redirect.to(new File(pathToResultFile)));
+            process = processBuilder.start();
+            process.waitFor();
+
+            // find winner and update to DB
+            return findWinnerFromResultFile(id, isAwayMatch, pathToResultFile);
         } else {
-            course = round.getBackupCourse();
-            if (course == null) {
-                throw new Exception("Backup course is not found");
+            if (match.getPlayer0() == null) {
+                return match.getPlayer1().getUsername();
+            } else {
+                return match.getPlayer0().getUsername();
             }
         }
-        if (isAwayMatch) {
-            player0 = match.getPlayer0();
-            player1 = match.getPlayer1();
-        } else {
-            player0 = match.getPlayer1();
-            player1 = match.getPlayer0();
-        }
-
-        Submission filePlayer0 = submissionDao.findByUserId(player0.getId());
-        Submission filePlayer1 = submissionDao.findByUserId(player1.getId());
-
-        // prepare command arguments
-        String fullPathToOfficialDir = Paths.get(this.fileStorageConfig.getOfficialDir()).toAbsolutePath().normalize()
-                .toString();
-        String fullPathToCourseDir = Paths.get(this.fileStorageConfig.getCourseDir()).toAbsolutePath().normalize()
-                .toString();
-        String fullPathToPlayerDir = Paths.get(this.fileStorageConfig.getPlayerDir()).toAbsolutePath().normalize()
-                .toString();
-        String fullPathToResultDir = Paths.get(this.fileStorageConfig.getResultDir()).toAbsolutePath().normalize()
-                .toString();
-        // need to create directory before create result file
-        Files.createDirectories(Paths.get(this.fileStorageConfig.getResultDir()).toAbsolutePath().normalize());
-
-        String pathToOfficial = new StringBuilder().append(fullPathToOfficialDir).append(File.separator)
-                .append(GameConstant.GAME_OFFICIAL_NAME).toString();
-        String pathToCourse = new StringBuilder().append(fullPathToCourseDir).append(File.separator).append("course_")
-                .append(course.getId()).append(GameConstant.COURSE_FILE_EXTENSION).toString();
-
-        String pathToPlayer0 = null;
-        if (filePlayer0.getLanguage().getName().toLowerCase().contains("java")) {
-            pathToPlayer0 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
-                    .append(player0.getUsername()).append(File.separator).append("runme.sh").toString();
-        } else {
-            pathToPlayer0 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
-                    .append(player0.getUsername()).append(File.separator).append("runme").toString();
-        }
-        String nameOfPlayer0 = player0.getUsername();
-
-        String pathToPlayer1 = null;
-        if (filePlayer1.getLanguage().getName().toLowerCase().contains("java")) {
-            pathToPlayer1 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
-                    .append(player1.getUsername()).append(File.separator).append("runme.sh").toString();
-        } else {
-            pathToPlayer1 = new StringBuilder().append(fullPathToPlayerDir).append(File.separator)
-                    .append(player1.getUsername()).append(File.separator).append("runme").toString();
-        }
-        String nameOfPlayer1 = player1.getUsername();
-
-        String pathToResultFile = null;
-        if (isAwayMatch) {
-            pathToResultFile = new StringBuilder().append(fullPathToResultDir).append(File.separator).append("match_")
-                    .append(id).append("_away.txt").toString();
-        } else {
-            pathToResultFile = new StringBuilder().append(fullPathToResultDir).append(File.separator).append("match_")
-                    .append(id).append("_home.txt").toString();
-        }
-
-        // run game
-        ProcessBuilder processBuilder = null;
-        Process process = null;
-
-        logger.info("Running game {} between {} and {}", id, nameOfPlayer0, nameOfPlayer1);
-        logger.info("Command is: {} {} {} {} {} {}", pathToOfficial, pathToCourse, pathToPlayer0, nameOfPlayer0,
-                pathToPlayer1, nameOfPlayer1);
-        processBuilder = new ProcessBuilder(pathToOfficial, pathToCourse, pathToPlayer0, nameOfPlayer0, pathToPlayer1,
-                nameOfPlayer1);
-        processBuilder.redirectOutput(Redirect.to(new File(pathToResultFile)));
-        process = processBuilder.start();
-        process.waitFor();
-
-        // find winner and update to DB
-        return findWinnerFromResultFile(id, isAwayMatch, pathToResultFile);
     }
 
     private void updateFinalWinner(long id, String awayWinner, String homeWinner) {
@@ -286,39 +297,28 @@ public class MatchServiceImpl implements MatchService {
         }
 
         User player0 = match.getPlayer0();
-        if (player0 == null) {
-            throw new RunGameException("Player 0 for match id = " + id + " not found");
-        }
-
         User player1 = match.getPlayer1();
-        if (player1 == null) {
-            throw new RunGameException("Player 1 for match id = " + id + " not found");
+        if (player0 != null && player1 != null) {
+            Submission filePlayer0 = submissionDao.findByUserId(player0.getId());
+            Submission filePlayer1 = submissionDao.findByUserId(player1.getId());
+
+            if (filePlayer0 == null && filePlayer1 == null) {
+                throw new RunGameException("No submission found for both players!");
+            }
+
+            String pathToOfficial = new StringBuilder().append(fileStorageConfig.getOfficialDir())
+                    .append(File.separator).append(GameConstant.GAME_OFFICIAL_NAME).toString();
+            String pathToCourse = new StringBuilder().append(fileStorageConfig.getCourseDir()).append(File.separator)
+                    .append("course_").append(course.getId()).append(GameConstant.COURSE_FILE_EXTENSION).toString();
+
+            if (!new File(pathToOfficial).exists()) {
+                throw new RunGameException("Official file is not found");
+            }
+
+            if (!new File(pathToCourse).exists()) {
+                throw new RunGameException("Course " + course.getName() + " file is not found");
+            }
         }
-
-        Submission filePlayer0 = submissionDao.findByUserId(player0.getId());
-        if (filePlayer0 == null) {
-            throw new RunGameException("No submission found for " + player0.getUsername());
-        }
-        Submission filePlayer1 = submissionDao.findByUserId(player1.getId());
-        if (filePlayer1 == null) {
-            throw new RunGameException("No submission found for " + player1.getUsername());
-        }
-
-        String pathToOfficial = new StringBuilder().append(fileStorageConfig.getOfficialDir()).append(File.separator)
-                .append(GameConstant.GAME_OFFICIAL_NAME).toString();
-        String pathToCourse = new StringBuilder().append(fileStorageConfig.getCourseDir()).append(File.separator)
-                .append("course_").append(course.getId()).append(GameConstant.COURSE_FILE_EXTENSION).toString();
-
-        if (!new File(pathToOfficial).exists()) {
-            throw new RunGameException("Official file is not found");
-        }
-
-        if (!new File(pathToCourse).exists()) {
-            throw new RunGameException("Course " + course.getName() + " file is not found");
-        }
-
-        return;
-
     }
 
     /*---------------------------- MATCH MANAGEMENT -----------------------------*/
@@ -329,15 +329,17 @@ public class MatchServiceImpl implements MatchService {
         Optional<User> player0 = userDao.findById(matchDto.getFirstPlayerId());
         Optional<User> player1 = userDao.findById(matchDto.getSecondPlayerId());
 
-        if (!round.isPresent() || !player0.isPresent() || !player1.isPresent()) {
+        if (!round.isPresent() || (!player0.isPresent() && !player1.isPresent())) {
             logger.error("Round or player not found!");
             return false;
         }
 
         Match match = new Match();
         match.setRound(round.get());
-        match.setPlayer0(player0.get());
-        match.setPlayer1(player1.get());
+        if (player0.isPresent())
+            match.setPlayer0(player0.get());
+        if (player1.isPresent())
+            match.setPlayer1(player1.get());
         match.setCreatedDate(new Date());
         match.setResultPublished(false);
         match.setUpdatedDate(new Date());

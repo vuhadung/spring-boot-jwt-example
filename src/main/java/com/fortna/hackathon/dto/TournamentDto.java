@@ -6,7 +6,7 @@ public class TournamentDto {
 
     private List<MatchDto> teams;
 
-    private List<List<String>> results;
+    private List<List<WinnerDto>> results;
 
     public List<MatchDto> getTeams() {
         return teams;
@@ -16,11 +16,11 @@ public class TournamentDto {
         this.teams = teams;
     }
 
-    public List<List<String>> getResults() {
+    public List<List<WinnerDto>> getResults() {
         return results;
     }
 
-    public void setResults(List<List<String>> results) {
+    public void setResults(List<List<WinnerDto>> results) {
         this.results = results;
     }
 
@@ -72,5 +72,26 @@ public class TournamentDto {
             this.secondPlayerAvatar = secondPlayerAvatar;
         }
 
+    }
+
+    public static class WinnerDto {
+        private Long winnerId;
+        private String winnerName;
+
+        public Long getWinnerId() {
+            return winnerId;
+        }
+
+        public void setWinnerId(Long winnerId) {
+            this.winnerId = winnerId;
+        }
+
+        public String getWinnerName() {
+            return winnerName;
+        }
+
+        public void setWinnerName(String winnerName) {
+            this.winnerName = winnerName;
+        }
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fortna.hackathon.dao.RoundDao;
 import com.fortna.hackathon.dto.TournamentDto;
 import com.fortna.hackathon.dto.TournamentDto.MatchDto;
+import com.fortna.hackathon.dto.TournamentDto.WinnerDto;
 import com.fortna.hackathon.entity.Match;
 import com.fortna.hackathon.entity.Round;
 import com.fortna.hackathon.service.TournamentService;
@@ -36,31 +37,43 @@ public class TournamentServiceImpl implements TournamentService {
 
         TournamentDto tournament = new TournamentDto();
         List<MatchDto> teams = new ArrayList<>();
-        List<List<String>> results = new ArrayList<>();
+        List<List<WinnerDto>> results = new ArrayList<>();
 
         for (Round r : rounds) {
-            List<String> resultOfRound = new ArrayList<>();
+            List<WinnerDto> resultOfRound = new ArrayList<>();
             List<Match> matches = r.getMatches();
             logger.info("Found {} matches for round {}", matches.size(), r.getName());
             for (Match m : matches) {
                 MatchDto obj = new MatchDto();
                 obj.setId(m.getId());
-                obj.setFirstPlayer(m.getPlayer0().getDisplayName());
-                if (m.getPlayer0().getAvatar() != null)
-                    obj.setFirstPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer0().getAvatar()));
-                if (m.getPlayer1().getAvatar() != null)
-                    obj.setSecondPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer1().getAvatar()));
-                obj.setSecondPlayer(m.getPlayer1().getDisplayName());
+
+                if (m.getPlayer0() != null) {
+                    obj.setFirstPlayer(m.getPlayer0().getDisplayName());
+                    if (m.getPlayer0().getAvatar() != null)
+                        obj.setFirstPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer0().getAvatar()));
+                }
+
+                if (m.getPlayer1() != null) {
+                    obj.setSecondPlayer(m.getPlayer1().getDisplayName());
+                    if (m.getPlayer1().getAvatar() != null)
+                        obj.setSecondPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer1().getAvatar()));
+                }
                 teams.add(obj);
-                if (m.isResultPublished()) {
-                    String winner = m.getFinalWinner() != null ? m.getFinalWinner().getDisplayName() : "";
-                    resultOfRound.add(winner);
+
+                if (m.isResultPublished() && m.getFinalWinner() != null) {
+                    WinnerDto winnerDto = new WinnerDto();
+                    winnerDto.setWinnerId(m.getFinalWinner().getId());
+                    winnerDto.setWinnerName(m.getFinalWinner().getDisplayName());
+                    resultOfRound.add(winnerDto);
                     logger.info("Match {} between {} and {}. Final winner is {}", obj.getId(), obj.getFirstPlayer(),
-                            obj.getSecondPlayer(), winner != "" ? winner : "N/A");
+                            obj.getSecondPlayer(), m.getFinalWinner().getDisplayName());
                 } else {
-                    resultOfRound.add("");
-                    logger.info("Match {} between {} and {}. Final winner is not published yet!", obj.getId(),
-                            obj.getFirstPlayer(), obj.getSecondPlayer());
+                    WinnerDto winnerDto = new WinnerDto();
+                    winnerDto.setWinnerId(null);
+                    winnerDto.setWinnerName(null);
+                    resultOfRound.add(winnerDto);
+                    logger.info("Match {} between {} and {}. Final winner is not published yet or the game is draw!",
+                            obj.getId(), obj.getFirstPlayer(), obj.getSecondPlayer());
                 }
             }
             results.add(resultOfRound);
