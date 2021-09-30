@@ -1,4 +1,17 @@
-FROM openjdk:8-jdk-alpine
+FROM centos:7
+
+RUN yum update -y && \
+yum install -y wget && \
+yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel && \
+yum clean all
+
+RUN yum update -y && \
+yum install -y epel-release && \
+yum install -y boost boost-thread boost-devel && \
+yum clean all
+
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+# ENV PATH "$PATH:${JAVA_HOME}/bin"
 
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar

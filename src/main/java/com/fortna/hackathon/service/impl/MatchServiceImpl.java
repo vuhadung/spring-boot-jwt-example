@@ -366,6 +366,7 @@ public class MatchServiceImpl implements MatchService {
             dto.setHomeMatchWinner(m.getHomeMatchWinner() != null ? m.getHomeMatchWinner().getDisplayName() : "");
             dto.setFinalWinner(m.getFinalWinner() != null ? m.getFinalWinner().getDisplayName() : "");
             dto.setErrorMessage(m.getErrorMessage() != null ? m.getErrorMessage() : "");
+            dto.setRoundName(m.getRound().getName());
             dto.setResultPublished(m.isResultPublished());
             return dto;
         }).collect(Collectors.toList());

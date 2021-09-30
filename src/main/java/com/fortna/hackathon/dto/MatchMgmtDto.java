@@ -4,6 +4,8 @@ public class MatchMgmtDto {
     
     private Long id;
     
+    private String roundName;
+    
     private String firstPlayer;
     
     private String secondPlayer;
@@ -81,5 +83,13 @@ public class MatchMgmtDto {
     }
 
     private boolean resultPublished;
+
+    public String getRoundName() {
+        return roundName;
+    }
+
+    public void setRoundName(String roundName) {
+        this.roundName = roundName;
+    }
 
 }
