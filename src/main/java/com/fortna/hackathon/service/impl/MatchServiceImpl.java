@@ -326,8 +326,12 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public boolean createMatch(CreateMatchDto matchDto) {
         Optional<Round> round = roundDao.findById(matchDto.getRoundId());
-        Optional<User> player0 = userDao.findById(matchDto.getFirstPlayerId());
-        Optional<User> player1 = userDao.findById(matchDto.getSecondPlayerId());
+        Optional<User> player0 = Optional.empty();
+        Optional<User> player1 = Optional.empty();
+        if (matchDto.getFirstPlayerId() != null)
+            player0 = userDao.findById(matchDto.getFirstPlayerId());
+        if (matchDto.getSecondPlayerId() != null)
+            player1 = userDao.findById(matchDto.getSecondPlayerId());
 
         if (!round.isPresent() || (!player0.isPresent() && !player1.isPresent())) {
             logger.error("Round or player not found!");
