@@ -29,6 +29,9 @@ public class TokenProvider implements Serializable {
     @Value("${jwt.signing.key}")
     public String SIGNING_KEY;
 
+    @Value("${jwt.username.key}")
+    public String DISPLAY_NAME_KEY;
+
     @Value("${jwt.authorities.key}")
     public String AUTHORITIES_KEY;
 
@@ -61,8 +64,10 @@ public class TokenProvider implements Serializable {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        String displayName = userService.findOne(authentication.getName()).getDisplayName();
+
         return Jwts.builder().setSubject(authentication.getName()).claim(AUTHORITIES_KEY, authorities)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .claim(DISPLAY_NAME_KEY, displayName).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY).compact();
     }
