@@ -1,8 +1,8 @@
 drop table if exists MATCHES cascade;
 drop table if exists SUBMISSIONS cascade;
+drop table if exists ROUNDS cascade;
 drop table if exists COURSES cascade;
 drop table if exists LANGUAGES cascade;
-drop table if exists ROUNDS cascade;
 drop table if exists USER_ROLE cascade;
 drop table if exists ROLES cascade;
 drop table if exists USERS cascade;
@@ -25,7 +25,7 @@ create sequence USER_ROLE_SEQ start 1 increment 1;
 create sequence USER_SEQ start 1 increment 1;
 create sequence ROUND_SEQ start 1 increment 1;
 
- create table COURSES (
+   create table COURSES (
        ID int8 not null,
         IS_BACKUP boolean,
         CREATED_DATE timestamp,
@@ -50,8 +50,6 @@ create sequence ROUND_SEQ start 1 increment 1;
         RESULT_PUBLISHED boolean,
         UPDATED_DATE timestamp,
         AWAY_MATCH_WINNER_ID int8,
-        BACKUP_COURSE_ID int8,
-        COURSE_ID int8,
         WINNER_ID int8,
         HOME_MATCH_WINNER_ID int8,
         PARENT_MATCH_0_ID int8,
@@ -74,6 +72,8 @@ create sequence ROUND_SEQ start 1 increment 1;
         END_DATE timestamp,
         ROUND_NAME varchar(255),
         START_DATE timestamp,
+        BACKUP_COURSE_ID int8,
+        COURSE_ID int8,
         primary key (ID)
     );
 
@@ -113,16 +113,6 @@ create sequence ROUND_SEQ start 1 increment 1;
        references USERS;
 
     alter table MATCHES 
-       add constraint FK5je1dme7qc5u7renc6bvelcr9 
-       foreign key (BACKUP_COURSE_ID) 
-       references COURSES;
-
-    alter table MATCHES 
-       add constraint FKfokqqfl172aqbhwqk0lwa7vj5 
-       foreign key (COURSE_ID) 
-       references COURSES;
-
-    alter table MATCHES 
        add constraint FKrmhd5g0f8fsdkgpr2jxlo41lj 
        foreign key (WINNER_ID) 
        references USERS;
@@ -157,6 +147,16 @@ create sequence ROUND_SEQ start 1 increment 1;
        foreign key (ROUND_ID) 
        references ROUNDS;
 
+    alter table ROUNDS 
+       add constraint FKs20x90h30pph6kpybgjox106o 
+       foreign key (BACKUP_COURSE_ID) 
+       references COURSES;
+
+    alter table ROUNDS 
+       add constraint FKkka594dp3w5wkp07qe6mp7d0r 
+       foreign key (COURSE_ID) 
+       references COURSES;
+
     alter table SUBMISSIONS 
        add constraint FKrao7vakvldnp9rvn93q2nlhdg 
        foreign key (LANGUAGE_ID) 
@@ -176,6 +176,7 @@ create sequence ROUND_SEQ start 1 increment 1;
        add constraint FKr4wtg8onirvrqs1ailjjjsx0y 
        foreign key (USER_ID) 
        references USERS;
+
 	
 -- Initial data 	   
 INSERT INTO ROLES (ID, DESCRIPTION, NAME) VALUES (NEXTVAL('ROLE_SEQ'), 'Admin role', 'ADMIN');

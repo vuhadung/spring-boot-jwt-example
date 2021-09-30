@@ -32,9 +32,11 @@ public class RoundController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createRound(@Valid @RequestBody CreateRoundDto roundDto) {
-        if (roundDto.getStartDate() == null || roundDto.getEndDate() == null)
+        if (roundDto.getStartDate() == null || roundDto.getEndDate() == null || roundDto.getMainCourseId() == null
+                || roundDto.getBackupCourseId() == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AppResponse("Invalid request body!", null));
-        roundService.createRound(roundDto);
+        if (!roundService.createRound(roundDto))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AppResponse("Course not found!", null));;
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, "Create round successfully!"));
     }
 

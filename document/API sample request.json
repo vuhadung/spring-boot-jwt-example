@@ -116,7 +116,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"roundId\": 1,\r\n    \"firstPlayerId\": 3,\r\n    \"secondPlayerId\": 3,\r\n    \"mainCourseId\": 3,\r\n    \"backupCourseId\": 3\r\n}",
+					"raw": "{\r\n    \"roundId\": 1,\r\n    \"firstPlayerId\": 3,\r\n    \"secondPlayerId\": 3\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -150,7 +150,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"roundName\": \"round 1\",\r\n    \"startDate\": 1632813000,\r\n    \"endDate\": 1633046400\r\n}",
+					"raw": "{\r\n    \"roundName\": \"round 1\",\r\n    \"startDate\": 1632813000,\r\n    \"endDate\": 1633046400,\r\n    \"mainCourseId\": 3,\r\n    \"backupCourseId\": 3\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

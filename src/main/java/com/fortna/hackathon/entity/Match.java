@@ -39,15 +39,6 @@ public class Match {
     @JoinColumn(name = "PLAYER_1_ID")
     private User player1;
 
-    // Courses
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COURSE_ID")
-    private Course course;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BACKUP_COURSE_ID")
-    private Course backupCourse;
-
     // Match's winner
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "WINNER_ID")
@@ -118,14 +109,6 @@ public class Match {
         this.player1 = player1;
     }
 
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -148,14 +131,6 @@ public class Match {
 
     public void setResultPublished(boolean resultPublished) {
         this.resultPublished = resultPublished;
-    }
-
-    public Course getBackupCourse() {
-        return backupCourse;
-    }
-
-    public void setBackupCourse(Course backupCourse) {
-        this.backupCourse = backupCourse;
     }
 
     public User getFinalWinner() {

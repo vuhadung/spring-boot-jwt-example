@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortna.hackathon.config.FileStorageConfiguration;
-import com.fortna.hackathon.dao.CourseDao;
 import com.fortna.hackathon.dao.MatchDao;
 import com.fortna.hackathon.dao.RoundDao;
 import com.fortna.hackathon.dao.SubmissionDao;
@@ -47,9 +46,6 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     private UserDao userDao;
-
-    @Autowired
-    private CourseDao courseDao;
 
     @Autowired
     private RoundDao roundDao;
@@ -112,10 +108,11 @@ public class MatchServiceImpl implements MatchService {
         Course course = null;
         User player0 = null;
         User player1 = null;
+        Round round = match.getRound();
         if (isMainCourse) {
-            course = match.getCourse();
+            course = round.getCourse();
         } else {
-            course = match.getBackupCourse();
+            course = round.getBackupCourse();
             if (course == null) {
                 throw new Exception("Backup course is not found");
             }
@@ -278,7 +275,12 @@ public class MatchServiceImpl implements MatchService {
             throw new RunGameException("Match id = " + id + " not found");
         }
 
-        Course course = match.getCourse();
+        Round round = match.getRound();
+        if (round == null) {
+            throw new RunGameException("Match id = " + id + " does not belongs to any round");
+        }
+
+        Course course = round.getCourse();
         if (course == null) {
             throw new RunGameException("Course for match id = " + id + " not found");
         }
@@ -326,11 +328,9 @@ public class MatchServiceImpl implements MatchService {
         Optional<Round> round = roundDao.findById(matchDto.getRoundId());
         Optional<User> player0 = userDao.findById(matchDto.getFirstPlayerId());
         Optional<User> player1 = userDao.findById(matchDto.getSecondPlayerId());
-        Optional<Course> mainCourse = courseDao.findById(matchDto.getMainCourseId());
-        Optional<Course> backupCourse = courseDao.findById(matchDto.getBackupCourseId());
-        if (!round.isPresent() || !player0.isPresent() || !player1.isPresent() || !mainCourse.isPresent()
-                || !backupCourse.isPresent()) {
-            logger.error("User or course not found!");
+
+        if (!round.isPresent() || !player0.isPresent() || !player1.isPresent()) {
+            logger.error("Round or player not found!");
             return false;
         }
 
@@ -338,8 +338,6 @@ public class MatchServiceImpl implements MatchService {
         match.setRound(round.get());
         match.setPlayer0(player0.get());
         match.setPlayer1(player1.get());
-        match.setCourse(mainCourse.get());
-        match.setBackupCourse(backupCourse.get());
         match.setCreatedDate(new Date());
         match.setResultPublished(false);
         match.setUpdatedDate(new Date());

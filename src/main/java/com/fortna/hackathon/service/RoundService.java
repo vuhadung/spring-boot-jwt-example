@@ -7,7 +7,7 @@ import com.fortna.hackathon.entity.Round;
 
 public interface RoundService {
 
-    void createRound(CreateRoundDto roundDto);
+    boolean createRound(CreateRoundDto roundDto);
 
     List<Round> getActiveRounds();
 

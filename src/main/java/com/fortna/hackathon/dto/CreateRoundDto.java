@@ -10,6 +10,10 @@ public class CreateRoundDto {
     private Long startDate;
 
     private Long endDate;
+    
+    private Long mainCourseId;
+
+    private Long backupCourseId;
 
     public String getRoundName() {
         return roundName;
@@ -33,6 +37,22 @@ public class CreateRoundDto {
 
     public void setEndDate(Long endDate) {
         this.endDate = endDate;
+    }
+
+    public Long getMainCourseId() {
+        return mainCourseId;
+    }
+
+    public void setMainCourseId(Long mainCourseId) {
+        this.mainCourseId = mainCourseId;
+    }
+
+    public Long getBackupCourseId() {
+        return backupCourseId;
+    }
+
+    public void setBackupCourseId(Long backupCourseId) {
+        this.backupCourseId = backupCourseId;
     }
 
 }

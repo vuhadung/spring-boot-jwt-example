@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -41,13 +43,22 @@ public class Round {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date endDate;
-    
+
+    // Courses
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COURSE_ID")
+    private Course course;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BACKUP_COURSE_ID")
+    private Course backupCourse;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Match> matches;
 
     // Getters and Setters
-    
+
     public Long getId() {
         return id;
     }
@@ -78,6 +89,22 @@ public class Round {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public Course getBackupCourse() {
+        return backupCourse;
+    }
+
+    public void setBackupCourse(Course backupCourse) {
+        this.backupCourse = backupCourse;
     }
 
     public List<Match> getMatches() {

@@ -54,8 +54,7 @@ public class MatchController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createMatch(@RequestBody CreateMatchDto createMatchDto) {
         if (createMatchDto.getRoundId() == null || createMatchDto.getFirstPlayerId() == null
-                || createMatchDto.getSecondPlayerId() == null || createMatchDto.getMainCourseId() == null
-                || createMatchDto.getBackupCourseId() == null)
+                || createMatchDto.getSecondPlayerId() == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AppResponse("Invalid body request!", null));
         if (!matchService.createMatch(createMatchDto))
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AppResponse("Invalid body request!", null));

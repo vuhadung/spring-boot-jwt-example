@@ -8,10 +8,6 @@ public class CreateMatchDto {
 
     private Long secondPlayerId;
 
-    private Long mainCourseId;
-
-    private Long backupCourseId;
-
     public Long getFirstPlayerId() {
         return firstPlayerId;
     }
@@ -26,22 +22,6 @@ public class CreateMatchDto {
 
     public void setSecondPlayerId(Long secondPlayerId) {
         this.secondPlayerId = secondPlayerId;
-    }
-
-    public Long getMainCourseId() {
-        return mainCourseId;
-    }
-
-    public void setMainCourseId(Long mainCourseId) {
-        this.mainCourseId = mainCourseId;
-    }
-
-    public Long getBackupCourseId() {
-        return backupCourseId;
-    }
-
-    public void setBackupCourseId(Long backupCourseId) {
-        this.backupCourseId = backupCourseId;
     }
 
     public Long getRoundId() {
