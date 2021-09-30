@@ -485,6 +485,25 @@
 			"response": []
 		},
 		{
+			"name": "Get Tournament",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8088/tournament",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"tournament"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get all normal courses",
 			"request": {
 				"method": "GET",

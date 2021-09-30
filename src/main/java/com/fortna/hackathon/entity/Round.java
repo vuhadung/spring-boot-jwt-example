@@ -47,10 +47,12 @@ public class Round {
     // Courses
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COURSE_ID")
+    @JsonIgnore
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BACKUP_COURSE_ID")
+    @JsonIgnore
     private Course backupCourse;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.ALL)

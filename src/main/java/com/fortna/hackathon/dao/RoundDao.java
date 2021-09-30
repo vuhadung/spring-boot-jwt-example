@@ -11,5 +11,7 @@ public interface RoundDao extends CrudRepository<Round, Long> {
     
     @Query("from Round r where r.startDate <= current_timestamp() and r.endDate >= current_timestamp()")
     List<Round> findActiveRounds();
+    
+    List<Round> findAllByOrderByIdAsc();
 
 }
