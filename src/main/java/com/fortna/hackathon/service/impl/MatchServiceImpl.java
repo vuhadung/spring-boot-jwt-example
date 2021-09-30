@@ -358,8 +358,10 @@ public class MatchServiceImpl implements MatchService {
         List<MatchMgmtDto> results = matches.stream().map(m -> {
             MatchMgmtDto dto = new MatchMgmtDto();
             dto.setId(m.getId());
-            dto.setFirstPlayer(m.getPlayer0().getDisplayName());
-            dto.setSecondPlayer(m.getPlayer1().getDisplayName());
+            if (m.getPlayer0() != null)
+                dto.setFirstPlayer(m.getPlayer0().getDisplayName());
+            if (m.getPlayer1() != null)
+                dto.setSecondPlayer(m.getPlayer1().getDisplayName());
             dto.setAwayMatchWinner(m.getAwayMatchWinner() != null ? m.getAwayMatchWinner().getDisplayName() : "");
             dto.setHomeMatchWinner(m.getHomeMatchWinner() != null ? m.getHomeMatchWinner().getDisplayName() : "");
             dto.setFinalWinner(m.getFinalWinner() != null ? m.getFinalWinner().getDisplayName() : "");
