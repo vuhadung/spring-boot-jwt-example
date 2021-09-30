@@ -1,0 +1,11 @@
+docker-compose -f file_name.yml up -d
+docker-compose -f file_name.yml down
+
+docker ps
+docker image ls
+
+docker image build . --network host
+docker image tag 90438f792352 localhost:5000/dungvu/web-app
+docker image push localhost:5000/dungvu/web-app:latest
+
+docker inspect container_id -f "{{json .NetworkSettings.Networks }}"
