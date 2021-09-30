@@ -47,10 +47,16 @@ public class TournamentServiceImpl implements TournamentService {
                 obj.setFirstPlayer(m.getPlayer0().getDisplayName());
                 obj.setSecondPlayer(m.getPlayer1().getDisplayName());
                 teams.add(obj);
-                String winner = m.getFinalWinner() != null ? m.getFinalWinner().getDisplayName() : "";
-                resultOfRound.add(winner);
-                logger.info("Match {} between {} and {}. Final winner is {}", obj.getId(), obj.getFirstPlayer(),
-                        obj.getSecondPlayer(), winner != "" ? winner : "N/A");
+                if (m.isResultPublished()) {
+                    String winner = m.getFinalWinner() != null ? m.getFinalWinner().getDisplayName() : "";
+                    resultOfRound.add(winner);
+                    logger.info("Match {} between {} and {}. Final winner is {}", obj.getId(), obj.getFirstPlayer(),
+                            obj.getSecondPlayer(), winner != "" ? winner : "N/A");
+                } else {
+                    resultOfRound.add("");
+                    logger.info("Match {} between {} and {}. Final winner is not published yet!", obj.getId(),
+                            obj.getFirstPlayer(), obj.getSecondPlayer());
+                }
             }
             results.add(resultOfRound);
         }
