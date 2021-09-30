@@ -80,9 +80,18 @@ public class UserController {
     }
 
     @GetMapping(value = "/user/avatar", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUserAvatar(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> getUserAvatar(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(name = "compress", required = true) String compress) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String data = userService.getUserAvatar(authentication.getName());
+        boolean isCompressed;
+        if ("0".equals(compress)) {
+            isCompressed = false;
+        } else if ("1".equals(compress)) {
+            isCompressed = true;
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AppResponse(null, "Invalid params!"));
+        }
+        String data = userService.getUserAvatar(authentication.getName(), isCompressed);
         return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, data));
     }
 

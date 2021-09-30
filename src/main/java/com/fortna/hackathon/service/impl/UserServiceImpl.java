@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +25,7 @@ import com.fortna.hackathon.entity.User;
 import com.fortna.hackathon.entity.UserRole;
 import com.fortna.hackathon.service.RoleService;
 import com.fortna.hackathon.service.UserService;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import com.fortna.hackathon.utils.ImageProcessing;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -99,13 +100,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         userDao.updateAccessTokenByUsername(token, username);
     }
 
-    @SuppressWarnings("restriction")
     @Override
     @Transactional
-    public String getUserAvatar(String username) {
+    public String getUserAvatar(String username, boolean isCompressed) {
         User user = userDao.findByUsername(username);
         if (user.getAvatar() != null) {
-            return Base64.encode(user.getAvatar());
+            if (isCompressed)
+                return ImageProcessing.compressAvatar(user.getAvatar());
+            else
+                return Base64.encodeBase64String(user.getAvatar());
         }
         return new String();
     }

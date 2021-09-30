@@ -15,6 +15,7 @@ import com.fortna.hackathon.dto.TournamentDto.MatchDto;
 import com.fortna.hackathon.entity.Match;
 import com.fortna.hackathon.entity.Round;
 import com.fortna.hackathon.service.TournamentService;
+import com.fortna.hackathon.utils.ImageProcessing;
 
 @Service(value = "tournamentService")
 @Transactional
@@ -45,6 +46,10 @@ public class TournamentServiceImpl implements TournamentService {
                 MatchDto obj = new MatchDto();
                 obj.setId(m.getId());
                 obj.setFirstPlayer(m.getPlayer0().getDisplayName());
+                if (m.getPlayer0().getAvatar() != null)
+                    obj.setFirstPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer0().getAvatar()));
+                if (m.getPlayer1().getAvatar() != null)
+                    obj.setSecondPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer1().getAvatar()));
                 obj.setSecondPlayer(m.getPlayer1().getDisplayName());
                 teams.add(obj);
                 if (m.isResultPublished()) {

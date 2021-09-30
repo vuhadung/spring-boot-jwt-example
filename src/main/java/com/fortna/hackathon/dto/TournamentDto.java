@@ -28,7 +28,9 @@ public class TournamentDto {
     public static class MatchDto {
         private Long id;
         private String firstPlayer;
+        private String firstPlayerAvatar;
         private String secondPlayer;
+        private String secondPlayerAvatar;
 
         public Long getId() {
             return id;
@@ -52,6 +54,22 @@ public class TournamentDto {
 
         public void setSecondPlayer(String secondPlayer) {
             this.secondPlayer = secondPlayer;
+        }
+
+        public String getFirstPlayerAvatar() {
+            return firstPlayerAvatar;
+        }
+
+        public void setFirstPlayerAvatar(String firstPlayerAvatar) {
+            this.firstPlayerAvatar = firstPlayerAvatar;
+        }
+
+        public String getSecondPlayerAvatar() {
+            return secondPlayerAvatar;
+        }
+
+        public void setSecondPlayerAvatar(String secondPlayerAvatar) {
+            this.secondPlayerAvatar = secondPlayerAvatar;
         }
 
     }
