@@ -5,6 +5,10 @@ yum install -y wget && \
 yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel && \
 yum clean all
 
+RUN yum install -y make && yum clean all
+
+RUN dnf group install "Development Tools" -y
+
 RUN yum update -y && \
 yum install -y epel-release && \
 yum install -y boost boost-thread boost-devel && \

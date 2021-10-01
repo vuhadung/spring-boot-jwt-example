@@ -1,15 +1,17 @@
-version: '3.1'
+version: '3.7'
 
 services:
   hackathon-web-app:
     image: localhost:5001/dungvu/web-app:latest
-    network_mode: bridge
+    # network_mode: bridge
     ports:
       - 8088:8088
     volumes:
     - ./data:/data
     - ./logs:/logs
     environment:
-      - CONNECTION_URL=jdbc:postgresql://172.17.0.1:5432/hackathon
+      - CONNECTION_URL=jdbc:postgresql://host.docker.internal:5432/hackathon
       - CONNECTION_USERNAME=root
       - CONNECTION_PASSWORD=root
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

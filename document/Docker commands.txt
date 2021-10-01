@@ -9,3 +9,6 @@ docker image tag 90438f792352 localhost:5000/dungvu/web-app
 docker image push localhost:5000/dungvu/web-app:latest
 
 docker inspect container_id -f "{{json .NetworkSettings.Networks }}"
+docker exec -it container_id bash
+
+ls /usr/lib64 | grep "libboost_program_options"
