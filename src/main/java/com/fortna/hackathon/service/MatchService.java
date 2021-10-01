@@ -3,7 +3,7 @@ package com.fortna.hackathon.service;
 import java.util.List;
 
 import com.fortna.hackathon.dto.CreateMatchDto;
-import com.fortna.hackathon.dto.MatchMgmtDto;
+import com.fortna.hackathon.dto.PaginationResponseDto;
 
 public interface MatchService {
 
@@ -13,7 +13,7 @@ public interface MatchService {
     
     boolean createMatch(CreateMatchDto matchDto);
     
-    List<MatchMgmtDto> getAllMatchesForAdmin();
+    PaginationResponseDto getAllMatchesForAdmin(int pageIndex, int pageSize);
     
     void publishMatchesResult(List<Long> matchIds);
     

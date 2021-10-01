@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,7 @@ import com.fortna.hackathon.dto.CreateMatchDto;
 import com.fortna.hackathon.dto.GameLog;
 import com.fortna.hackathon.dto.GameLog.PlayerLog;
 import com.fortna.hackathon.dto.MatchMgmtDto;
+import com.fortna.hackathon.dto.PaginationResponseDto;
 import com.fortna.hackathon.entity.Course;
 import com.fortna.hackathon.entity.Match;
 import com.fortna.hackathon.entity.Round;
@@ -353,8 +358,9 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public List<MatchMgmtDto> getAllMatchesForAdmin() {
-        List<Match> matches = matchDao.findAllByOrderByIdAsc();
+    public PaginationResponseDto getAllMatchesForAdmin(int pageIndex, int pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+        Page<Match> matches = matchDao.findAll(pageable);
         List<MatchMgmtDto> results = matches.stream().map(m -> {
             MatchMgmtDto dto = new MatchMgmtDto();
             dto.setId(m.getId());
@@ -370,7 +376,14 @@ public class MatchServiceImpl implements MatchService {
             dto.setResultPublished(m.isResultPublished());
             return dto;
         }).collect(Collectors.toList());
-        return results;
+
+        PaginationResponseDto respnData = new PaginationResponseDto();
+        respnData.setItems(results);
+        respnData.setCurrentPageNo(matches.getNumber() + 1);
+        respnData.setPageSize(matches.getSize());
+        respnData.setTotalItems(matches.getTotalElements());
+        respnData.setTotalPages(matches.getTotalPages());
+        return respnData;
     }
 
     @Override

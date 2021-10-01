@@ -63,8 +63,10 @@ public class MatchController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllMatches() {
-        return ResponseEntity.status(HttpStatus.OK).body(new AppResponse(null, matchService.getAllMatchesForAdmin()));
+    public ResponseEntity<?> getAllMatches(@RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new AppResponse(null, matchService.getAllMatchesForAdmin(page, size)));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
