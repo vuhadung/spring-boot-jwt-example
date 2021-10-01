@@ -2,6 +2,7 @@ package com.fortna.hackathon.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -43,18 +44,22 @@ public class TournamentServiceImpl implements TournamentService {
         for (Round r : rounds) {
             List<ScoreDto> resultOfRound = new ArrayList<>();
             List<Match> matches = r.getMatches();
+            matches.sort(Comparator.comparing(Match::getId));
             logger.info("Found {} matches for round {}", matches.size(), r.getName());
             for (Match m : matches) {
                 MatchDto obj = new MatchDto();
+                obj.setRoundId(m.getRound().getId());
                 obj.setId(m.getId());
 
                 if (m.getPlayer0() != null) {
+                    obj.setFirstPlayerId(m.getPlayer0().getId());
                     obj.setFirstPlayer(m.getPlayer0().getDisplayName());
                     if (m.getPlayer0().getAvatar() != null)
                         obj.setFirstPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer0().getAvatar()));
                 }
 
                 if (m.getPlayer1() != null) {
+                    obj.setSecondPlayerId(m.getPlayer1().getId());
                     obj.setSecondPlayer(m.getPlayer1().getDisplayName());
                     if (m.getPlayer1().getAvatar() != null)
                         obj.setSecondPlayerAvatar(ImageProcessing.compressAvatar(m.getPlayer1().getAvatar()));

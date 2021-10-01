@@ -27,10 +27,13 @@ public class TournamentDto {
     // Nested classes
     public static class MatchDto {
         private Long id;
+        private Long firstPlayerId;
         private String firstPlayer;
         private String firstPlayerAvatar;
+        private Long secondPlayerId;
         private String secondPlayer;
         private String secondPlayerAvatar;
+        private Long roundId;
 
         public Long getId() {
             return id;
@@ -38,6 +41,30 @@ public class TournamentDto {
 
         public void setId(Long id) {
             this.id = id;
+        }
+
+        public Long getRoundId() {
+            return roundId;
+        }
+
+        public void setRoundId(Long roundId) {
+            this.roundId = roundId;
+        }
+
+        public Long getFirstPlayerId() {
+            return firstPlayerId;
+        }
+
+        public void setFirstPlayerId(Long firstPlayerId) {
+            this.firstPlayerId = firstPlayerId;
+        }
+
+        public Long getSecondPlayerId() {
+            return secondPlayerId;
+        }
+
+        public void setSecondPlayerId(Long secondPlayerId) {
+            this.secondPlayerId = secondPlayerId;
         }
 
         public String getFirstPlayer() {
