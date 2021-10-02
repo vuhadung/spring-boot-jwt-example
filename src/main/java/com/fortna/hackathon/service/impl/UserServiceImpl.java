@@ -91,6 +91,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         roleSet.add(userRole);
 
         nUser.setRoles(roleSet);
+        nUser.setCreatedDate(new Date());
+        nUser.setUpdatedDate(new Date());
         return userDao.save(nUser);
     }
 
