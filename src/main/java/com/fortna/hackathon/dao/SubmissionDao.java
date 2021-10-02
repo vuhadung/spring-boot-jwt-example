@@ -17,6 +17,6 @@ public interface SubmissionDao extends CrudRepository<Submission, Long> {
     @Query("from Submission s inner join fetch s.user where s.user.id = :userId")
     Submission findByUserId(@Param("userId") long userId);
     
-    List<Submission> findAll();
+    List<Submission> findAllByOrderByIdAsc();
 
 }

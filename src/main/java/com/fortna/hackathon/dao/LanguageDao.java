@@ -12,6 +12,6 @@ public interface LanguageDao extends CrudRepository<Language, Long> {
 
     Language findById(long id);
 
-    List<Language> findAll();
+    List<Language> findAllByOrderByIdAsc();
 
 }

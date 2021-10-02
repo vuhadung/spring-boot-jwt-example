@@ -26,7 +26,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> getAllCourses() {
-        return courseDAO.findAll();
+        return courseDAO.findAllByOrderByIdAsc();
     }
 
     @Override

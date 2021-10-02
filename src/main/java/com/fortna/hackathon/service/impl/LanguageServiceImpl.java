@@ -19,7 +19,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public List<Language> getAllLanguages() {
-        return languageDAO.findAll();
+        return languageDAO.findAllByOrderByIdAsc();
     }
 
 }

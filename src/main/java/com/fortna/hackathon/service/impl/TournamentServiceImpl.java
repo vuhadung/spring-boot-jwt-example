@@ -31,7 +31,7 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public TournamentDto getTournament() {
-        List<Round> rounds = roundDao.findAllByOrderByIdAsc();
+        List<Round> rounds = roundDao.findAllByOrderByStartDateAsc();
         if (rounds == null || rounds.isEmpty()) {
             logger.error("No round found!");
             return null;

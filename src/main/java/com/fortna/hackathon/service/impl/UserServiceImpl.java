@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Transactional
     public List<User> findAll() {
         List<User> list = new ArrayList<>();
-        userDao.findAll().iterator().forEachRemaining((u) -> {
+        userDao.findAllByOrderByIdAsc().iterator().forEachRemaining((u) -> {
             if (u.getRoles().stream().anyMatch(role -> "USER".equals(role.getRole().getName())))
                 list.add(u);
         });

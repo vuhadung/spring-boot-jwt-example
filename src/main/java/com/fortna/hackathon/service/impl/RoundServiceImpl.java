@@ -51,9 +51,7 @@ public class RoundServiceImpl implements RoundService {
 
     @Override
     public List<Round> getAllRounds() {
-        List<Round> result = new ArrayList<>();
-        roundDao.findAll().iterator().forEachRemaining(result::add);
-        return result;
+        return roundDao.findAllByOrderByStartDateAsc();
     }
 
 }

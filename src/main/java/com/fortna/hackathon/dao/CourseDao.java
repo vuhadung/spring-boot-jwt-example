@@ -14,7 +14,7 @@ public interface CourseDao extends CrudRepository<Course, Long> {
 
     Course findById(long id);
 
-    List<Course> findAll();
+    List<Course> findAllByOrderByIdAsc();
     
     @Query("from Course c where c.backup is :status")
     List<Course> findByIsBackup(@Param("status") boolean status);
