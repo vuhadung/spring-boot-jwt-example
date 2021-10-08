@@ -84,7 +84,8 @@ public class TournamentServiceImpl implements TournamentService {
                             obj.getId(), obj.getFirstPlayer(), obj.getSecondPlayer());
                 }
             }
-            results.add(resultOfRound);
+            if (!resultOfRound.isEmpty())
+                results.add(resultOfRound);
         }
 
         tournament.setTeams(teams);
