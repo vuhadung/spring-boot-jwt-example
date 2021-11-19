@@ -51,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok(new AppResponse(null, token));
     }
 
-    @SwitchOff(epochTime = "1633957200")
+    @SwitchOff(epochTime = "1643673599")
     @PreAuthorize("permitAll()")
     @PostMapping(value = "/auth/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveUser(@Valid @RequestBody UserDto user) {
