@@ -1,5 +1,11 @@
 FROM centos:8
 
+RUN cd /etc/yum.repos.d/ 
+RUN sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-*
+RUN sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=https://vault.centos.org|g" /etc/yum.repos.d/CentOS-*
+
+RUN yum clean all && yum update -y
+
 RUN yum update -y && \
   yum install -y wget && \
   yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel && \
